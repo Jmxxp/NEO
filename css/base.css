@@ -1,0 +1,413 @@
+/* ===== BASE - Reset, variáveis, tipografia ===== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Forçar herança de fonte em TODOS os elementos */
+*,
+*::before,
+*::after {
+    font-family: inherit;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: var(--app-font, "Inter"), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+
+    /* Fundo preto puro */
+    --chat-bg: #000000;
+
+    /* Cor do texto principal - branco suave */
+    --accent-color: #e6e6e6;
+
+    /* Cor da borda - sutil e elegante */
+    --border-color: rgba(255, 255, 255, 0.08);
+
+    /* Cor de placeholder */
+    --placeholder-color: #5a5a5a;
+
+    /* Glassmorphism base */
+    --glass-bg: rgba(30, 30, 30, 0.3);
+    --glass-blur: blur(6px);
+    --glass-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
+
+    /* Tamanho da fonte base */
+    --font-size: 16px;
+
+    background: none;
+    color: var(--accent-color);
+    font-size: var(--font-size);
+}
+
+/* Fundo estático */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--chat-bg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Reset de botões */
+button,
+.icon-btn,
+.send-btn {
+    outline: none;
+}
+
+button:focus,
+button:active,
+.icon-btn:focus,
+.icon-btn:active,
+.send-btn:focus,
+.send-btn:active {
+    outline: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+}
+
+/* Estilo unificado para marcação */
+mark {
+    background: #4ea3ff;
+    color: #ffffff;
+    padding: 1px 2px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* Estilos para Twemoji */
+img.emoji {
+    height: 1.2em;
+    width: 1.2em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.15em;
+    display: inline-block;
+}
+
+.message-bubble img.emoji {
+    height: 1.3em;
+    width: 1.3em;
+}
+
+/* ===== TEMA CLARO - LAYOUT ===== */
+
+body.theme-light .icon-btn {
+    background: #1a1a1a;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .icon-btn i {
+    color: #ffffff;
+}
+
+body.theme-light .chat-btn {
+    background: #1a1a1a;
+}
+
+body.theme-light .premium-chat-icon path {
+    fill: #ffffff;
+}
+
+body.theme-light .temp-chat-btn.active {
+    background: #c62828;
+    border-color: #c62828;
+}
+
+body.theme-light .temp-chat-btn.active i {
+    color: #ffffff;
+}
+
+body.theme-light .web-search-btn.active {
+    background: rgba(76, 175, 80, 0.9);
+    border-color: #4caf50;
+}
+
+body.theme-light .web-search-btn.active i {
+    color: #ffffff;
+}
+
+body.theme-light .input-wrapper {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: #cccccc;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+body.theme-light .input-wrapper textarea {
+    color: var(--accent-color) !important;
+}
+
+body.theme-light .input-wrapper textarea::placeholder {
+    color: #888888;
+}
+
+body.theme-light .send-btn {
+    background: #1a1a1a;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+body.theme-light .send-btn i {
+    color: #ffffff;
+}
+
+body.theme-light .mic-icon-btn {
+    color: #666666;
+}
+
+body.theme-light .mic-icon-btn.recording {
+    color: #c62828;
+}
+
+body.theme-light .attach-btn {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #ffffff;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+body.theme-light .attach-btn:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    opacity: 0.8;
+}
+
+/* ===== TEMA CLARO - MENSAGENS ===== */
+
+body.theme-light .message-row.user .message-bubble {
+    background: var(--accent-color);
+    color: #ffffff;
+}
+
+body.theme-light .message-row.ai .message-bubble {
+    color: var(--accent-color);
+}
+
+body.theme-light .dot {
+    background: var(--accent-color);
+}
+
+body.theme-light .copy-btn {
+    color: #666666;
+}
+
+body.theme-light .copy-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1a1a1a;
+}
+
+body.theme-light .message-bubble code:not(.hljs) {
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--accent-color);
+}
+
+body.theme-light .message-bubble pre {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .message-bubble pre code {
+    color: var(--accent-color);
+}
+
+body.theme-light .code-header {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+    color: #666666;
+}
+
+body.theme-light .copy-code-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #666666;
+}
+
+body.theme-light .copy-code-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+body.theme-light .message-bubble blockquote {
+    border-left-color: rgba(0, 0, 0, 0.3);
+}
+
+body.theme-light .message-bubble th,
+body.theme-light .message-bubble td {
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.theme-light .message-bubble th {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body.theme-light .message-bubble td {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+/* ===== TEMA CLARO - SIDEBAR ===== */
+
+body.theme-light .chat-sidebar {
+    background: #ffffff;
+}
+
+body.theme-light .chat-sidebar h2 {
+    color: var(--accent-color);
+}
+
+body.theme-light .new-chat-btn {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+body.theme-light .history-title {
+    color: #666666;
+}
+
+body.theme-light .history-item {
+    background: #f5f5f5;
+    color: var(--accent-color);
+    border: 1px solid #dddddd;
+}
+
+body.theme-light .history-item.active {
+    background: #e8e8e8;
+    border-color: var(--accent-color);
+}
+
+body.theme-light .history-item-subtitle {
+    color: #666666;
+}
+
+body.theme-light .history-search-input {
+    background: #f5f5f5;
+    border-color: #cccccc;
+    color: #1a1a1a !important;
+}
+
+body.theme-light .history-search-input::placeholder {
+    color: #888888;
+}
+
+body.theme-light .history-search .search-icon {
+    color: #666666;
+}
+
+body.theme-light .favorite-item {
+    background: #f5f5f5;
+    color: var(--accent-color);
+}
+
+body.theme-light .favorite-item:hover {
+    background: #e8e8e8;
+}
+
+body.theme-light .favorite-item-chat {
+    color: #666666;
+}
+
+body.theme-light .favorites-empty {
+    color: #888888;
+}
+
+body.theme-light .delete-chat-btn,
+body.theme-light .delete-favorite-btn {
+    color: #666666;
+}
+
+body.theme-light .delete-chat-btn:hover,
+body.theme-light .delete-favorite-btn:hover {
+    color: #ff6b6b;
+}
+
+body.theme-light #typed-text {
+    color: var(--accent-color);
+}
+
+/* Tema claro - Toggle de bloqueio biométrico */
+body.theme-light .lock-toggle {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+body.theme-light .lock-toggle.active {
+    background: #4caf50;
+}
+
+body.theme-light .lock-toggle-knob {
+    background: var(--accent-color);
+}
+
+body.theme-light .lock-toggle.active .lock-toggle-knob {
+    background: #ffffff;
+}
+
+body.theme-light .lock-toggle-container {
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .lock-toggle-label {
+    color: var(--accent-color);
+}
+
+/* Tema claro - Botão reiniciar parâmetros */
+body.theme-light .reset-params-btn {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+/* Tema claro - Preview de anexo PDF */
+body.theme-light .attachment-item,
+body.theme-light .attachment-preview-content {
+    background: #3a3a3a;
+    border: 1px solid #c62828;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .attachment-filename {
+    color: #ffffff;
+}
+
+body.theme-light .attachment-remove-btn {
+    background: rgba(0, 0, 0, 0.1);
+    color: #666666;
+}
+
+body.theme-light .attachment-remove-btn:hover {
+    background: rgba(198, 40, 40, 0.3);
+    color: #c62828;
+}
+
+/* Tema claro - Balão do PDF na conversa */
+body.theme-light .pdf-attachment-bubble,
+[data-theme="light"] .pdf-attachment-bubble {
+    background: #f5e6e6;
+    border: 1px solid #c62828;
+}
+
+body.theme-light .pdf-attachment-bubble .pdf-icon,
+[data-theme="light"] .pdf-attachment-bubble .pdf-icon {
+    color: #c62828;
+}
+
+body.theme-light .pdf-attachment-bubble .pdf-name,
+[data-theme="light"] .pdf-attachment-bubble .pdf-name {
+    color: #333333;
+}
+
+body.theme-light .pdf-attachment-bubble .pdf-size,
+[data-theme="light"] .pdf-attachment-bubble .pdf-size {
+    color: #666666;
+}
