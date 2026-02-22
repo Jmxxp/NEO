@@ -1,0 +1,295 @@
+/**
+ * NEO Web Version - Browser Compatibility Layer
+ * This file stubs out Cordova-dependent features and provides browser alternatives.
+ * Must be loaded BEFORE all other scripts.
+ */
+
+(function() {
+    'use strict';
+
+    // ====== Global flags ======
+    window.IS_WEB_VERSION = true;
+    window.isCordovaReady = false; // stays false - no Cordova
+
+    // ====== Stub Cordova plugins that might be referenced ======
+    
+    // Background mode (no-op)
+    if (!window.cordova) window.cordova = {};
+    if (!window.cordova.plugins) window.cordova.plugins = {};
+    window.cordova.plugins.backgroundMode = {
+        enable: function() {},
+        disable: function() {},
+        isActive: function() { return false; },
+        configure: function() {},
+        disableBatteryOptimizations: function() {},
+        disableWebViewOptimizations: function() {},
+        on: function() {},
+        setDefaults: function() {},
+        overrideBackButton: function() {},
+        moveToBackground: function() {},
+        moveToForeground: function() {},
+        isEnabled: function() { return false; },
+        setEnabled: function() {}
+    };
+
+    // Fingerprint/biometric (no-op)
+    window.Fingerprint = {
+        isAvailable: function(success, error) { 
+            if (error) error({ message: 'Not available in browser' }); 
+        },
+        show: function(opts, success, error) { 
+            if (error) error({ message: 'Not available in browser' }); 
+        }
+    };
+
+    // Theme detection (use matchMedia)
+    window.cordova.plugins.ThemeDetection = {
+        isDarkModeEnabled: function(success, error) {
+            var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (success) success({ value: isDark });
+        }
+    };
+
+    // Android permissions (auto-grant in browser)
+    window.cordova.plugins.permissions = {
+        RECORD_AUDIO: 'RECORD_AUDIO',
+        CAMERA: 'CAMERA',
+        checkPermission: function(perm, success) { 
+            if (success) success({ hasPermission: true }); 
+        },
+        requestPermission: function(perm, success) { 
+            if (success) success({ hasPermission: true }); 
+        }
+    };
+
+    // TTS plugin stub REMOVED - let voice-call.js use Web Speech API directly
+    // The callback-based stub was breaking await/Promise patterns in voice-call.js,
+    // causing particle sphere animation to stop immediately.
+    // All TTS references are guarded with typeof TTS !== 'undefined' and have
+    // proper Web Speech API fallbacks.
+
+    // File system stubs
+    if (!window.cordova.file) {
+        window.cordova.file = {
+            externalRootDirectory: '',
+            dataDirectory: '',
+            applicationDirectory: ''
+        };
+    }
+
+    // resolveLocalFileSystemURL stub
+    if (!window.resolveLocalFileSystemURL) {
+        window.resolveLocalFileSystemURL = function(path, success, error) {
+            if (error) error({ code: 1, message: 'Not available in browser' });
+        };
+    }
+
+    // File opener stub (use browser download)
+    if (!window.cordova.plugins.fileOpener2) {
+        window.cordova.plugins.fileOpener2 = {
+            open: function(path, mime, opts) {
+                console.log('[WEB] fileOpener2 not available, path:', path);
+            }
+        };
+    }
+
+    // InAppBrowser stub (use window.open)
+    if (!window.cordova.InAppBrowser) {
+        window.cordova.InAppBrowser = {
+            open: function(url, target) {
+                window.open(url, target || '_blank');
+            }
+        };
+    }
+
+    // Email plugin stub (use mailto:)
+    if (!window.cordova.plugins.email) {
+        window.cordova.plugins.email = {
+            open: function(opts, callback) {
+                var mailto = 'mailto:' + (opts.to || '');
+                if (opts.subject) mailto += '?subject=' + encodeURIComponent(opts.subject);
+                if (opts.body) mailto += (mailto.includes('?') ? '&' : '?') + 'body=' + encodeURIComponent(opts.body);
+                window.open(mailto, '_self');
+                if (typeof callback === 'function') callback();
+            },
+            isAvailable: function(cb) { if (cb) cb(true); }
+        };
+    }
+
+    // Social sharing stub (use Web Share API)
+    if (!window.plugins) window.plugins = {};
+    if (!window.plugins.socialsharing) {
+        window.plugins.socialsharing = {
+            shareWithOptions: function(opts, success, error) {
+                if (navigator.share) {
+                    navigator.share({
+                        title: opts.subject || '',
+                        text: opts.message || '',
+                        url: opts.url || ''
+                    }).then(function() {
+                        if (success) success();
+                    }).catch(function(err) {
+                        if (error) error(err);
+                    });
+                } else {
+                    // Fallback to clipboard
+                    var text = opts.message || '';
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(text);
+                    }
+                    if (success) success();
+                }
+            }
+        };
+    }
+
+    // Speech recognition plugin stub
+    if (!window.plugins.speechRecognition) {
+        window.plugins.speechRecognition = {
+            isRecognitionAvailable: function(success) {
+                var available = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+                if (success) success(available);
+            },
+            hasPermission: function(success) {
+                if (success) success(true);
+            },
+            requestPermission: function(success) {
+                if (success) success();
+            }
+        };
+    }
+
+    // AndroidFullScreen stub
+    window.AndroidFullScreen = {
+        immersiveMode: function(success) { if (success) success(); },
+        showSystemUI: function(success) { if (success) success(); }
+    };
+
+    // Shortcuts stub
+    if (!window.plugins.Shortcuts) {
+        window.plugins.Shortcuts = {
+            setDynamic: function() {},
+            supportsPinned: function(cb) { if (cb) cb(false); },
+            addPinned: function() {}
+        };
+    }
+
+    // BuildApk stub
+    window.BuildApk = null;
+
+    // Navigator connection stub
+    if (!navigator.connection) {
+        Object.defineProperty(navigator, 'connection', {
+            get: function() {
+                return {
+                    type: navigator.onLine ? 'wifi' : 'none'
+                };
+            }
+        });
+    }
+
+    // ====== Browser camera handler ======
+    // Replace native camera with file input
+    window.handleAttachCamera = function() {
+        var cameraInput = document.getElementById('cameraInput');
+        if (cameraInput) {
+            cameraInput.click();
+        }
+    };
+
+    // ====== Converter stubs ======
+    window.openConverter = function() {
+        if (window.showToast) {
+            window.showToast('Conversor não disponível na versão web', 'warning');
+        }
+    };
+
+    // ====== Local LLM stubs ======
+    // openLocalLlmModal and localLlmState now provided by ia-config.js
+
+    window.generateLocalResponse = function() {
+        return Promise.reject(new Error('Local LLM not available in web version'));
+    };
+
+    window.isLocalMode = function() { return false; };
+    window.setOnlineMode = function() {};
+
+    // LlamaNativeAsync stub
+    window.LlamaNativeAsync = null;
+
+    // ====== Vibration - allow in browsers that support it ======
+    // Override the isCordovaReady check for vibration
+    window.vibrate = function(ms) {
+        try {
+            if (navigator.vibrate) {
+                navigator.vibrate(ms || 10);
+            }
+        } catch(e) {}
+    };
+
+    // ====== PWA iOS safe area handling ======
+    document.addEventListener('DOMContentLoaded', function() {
+        // Apply safe area padding for iOS notch
+        var style = document.createElement('style');
+        style.textContent = 
+            '.input-bar { ' +
+            '  padding-bottom: env(safe-area-inset-bottom); ' +
+            '}' +
+            '.settings-header { ' +
+            '  padding-top: env(safe-area-inset-top); ' +
+            '}' +
+            '.notes-header { ' +
+            '  padding-top: env(safe-area-inset-top); ' +
+            '}' +
+            // Standalone mode (added to home screen)
+            '@media (display-mode: standalone) { ' +
+            '  body { -webkit-user-select: none; user-select: none; } ' +
+            '}' +
+            // Lock to portrait orientation
+            '@media screen and (orientation: landscape) { ' +
+            '  html { transform: rotate(-90deg); transform-origin: left top; ' +
+            '    width: 100vh; height: 100vw; overflow-x: hidden; position: absolute; top: 100%; left: 0; } ' +
+            '}';
+        document.head.appendChild(style);
+
+        // ====== Virtual Keyboard - Input bar sticks to keyboard ======
+        // The --app-height is already handled by inline script in <head>.
+        // Here we only need to move the input bar up when keyboard opens.
+        (function() {
+            var bar = document.querySelector('.input-bar');
+            if (!bar || !window.visualViewport) return;
+
+            function stickToKeyboard() {
+                var vv = window.visualViewport;
+                var offset = window.innerHeight - vv.height - vv.offsetTop;
+                bar.style.transform = 'translateY(-' + Math.max(0, offset) + 'px)';
+                
+                // Scroll messages to bottom when keyboard opens
+                if (offset > 100) {
+                    var msgs = document.getElementById('messages');
+                    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+                }
+            }
+
+            stickToKeyboard();
+            window.visualViewport.addEventListener('resize', stickToKeyboard);
+            window.visualViewport.addEventListener('scroll', stickToKeyboard);
+        })();
+
+        // Lock screen orientation if API available
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('portrait').catch(function() {
+                console.log('[WEB] Orientation lock not supported');
+            });
+        }
+
+        // Simulate deviceready event for initialization
+        setTimeout(function() {
+            console.log('[WEB] Simulating deviceready for web version');
+            var event = new Event('deviceready');
+            document.dispatchEvent(event);
+        }, 100);
+    });
+
+    console.log('[WEB] Browser compatibility layer loaded');
+})();

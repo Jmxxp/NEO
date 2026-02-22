@@ -1,0 +1,3006 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>NEO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+    <!-- App height fix for iOS keyboard -->
+    <script>
+    (function(){
+      function setAppHeight(){
+        var vv = window.visualViewport;
+        var h = vv ? vv.height : window.innerHeight;
+        document.documentElement.style.setProperty('--app-height', h + 'px');
+      }
+      setAppHeight();
+      window.addEventListener('resize', setAppHeight);
+      if(window.visualViewport){
+        window.visualViewport.addEventListener('resize', setAppHeight);
+        window.visualViewport.addEventListener('scroll', setAppHeight);
+      }
+    })();
+    </script>
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="NEO" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#050014" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png?v=2" />
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png?v=2" />
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144x144.png?v=2" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png?v=2" />
+    <link rel="icon" type="image/png" sizes="96x96" href="icons/icon-96x96.png?v=2" />
+    <link rel="shortcut icon" href="icons/icon-96x96.png?v=2" />
+
+    <!-- Fonte Questrial -->
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet" />
+
+    <!-- NOVO: Fontes adicionais (incluindo estilos especiais) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto:wght@400;500&family=Poppins:wght@400;500;600&family=Montserrat:wght@400;500;600&family=Open+Sans:wght@400;500;600&family=Lato:wght@400;700&family=Nunito:wght@400;600;700&family=Quicksand:wght@400;500;600&family=Source+Sans+Pro:wght@400;600&family=Raleway:wght@400;500;600&family=Ubuntu:wght@400;500&family=Dancing+Script:wght@400;700&family=Pacifico&family=Great+Vibes&family=Caveat:wght@400;600&family=Orbitron:wght@400;600;700&family=Share+Tech+Mono&family=VT323&family=Press+Start+2P&family=Playfair+Display:wght@400;600&family=Merriweather:wght@400;700&family=Lora:wght@400;600&family=Cinzel:wght@400;600&family=Abril+Fatface&family=Lobster&family=Fredoka+One&family=Bangers&family=Permanent+Marker&family=Creepster&family=UnifrakturMaguntia&family=MedievalSharp&family=Satisfy&family=Shadows+Into+Light&family=Comic+Neue:wght@400;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Font Awesome (LOCAL - funciona offline) -->
+    <link rel="stylesheet" href="fonts/fontawesome/css/all.min.css" />
+
+    <!-- Phosphor Icons (para ícones finos) -->
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/thin/style.css" />
+
+    <!-- Highlight.js para syntax highlighting -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+
+    <!-- CSS Modular -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/messages.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/notes.css">
+    <link rel="stylesheet" href="css/modals.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/code-studio.css">
+    <!-- converter.css removido - versão web -->
+    <link rel="stylesheet" href="css/media-loader.css">
+    <link rel="stylesheet" href="css/attach-sidebar.css">
+
+</head>
+
+<body>
+    <!-- Versão Web - sem Cordova -->
+    <script>
+        // PWA: Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js').then(function(reg) {
+                    console.log('[PWA] Service Worker registrado');
+                }).catch(function(err) {
+                    console.log('[PWA] Falha no registro do SW:', err);
+                });
+            });
+        }
+        // Flag global para indicar que estamos no navegador (não Cordova)
+        window.IS_WEB_VERSION = true;
+        window.isCordovaReady = false;
+    </script>
+
+    <!-- Tela de Termos de Uso - COMEÇA ESCONDIDA -->
+    <div id="termsOverlay" style="display:none; position:fixed; inset:0; z-index:99999; background:#0a0a0a; overflow-y:auto;">
+        <div style="padding:20px; max-width:600px; margin:0 auto; padding-bottom:40px;">
+            <h1 style="color:#fff; text-align:center; margin-bottom:10px; font-size:20px;">TERMOS DE USO E ISENÇÃO DE RESPONSABILIDADE – NEO</h1>
+            <p style="color:#888; text-align:center; margin-bottom:20px; font-size:14px;">Leia atentamente. Ao usar, você concorda integralmente.</p>
+            
+            <div style="color:#ccc; font-size:13px; line-height:1.5; padding:15px; background:#111; border-radius:8px; margin-bottom:20px;">
+                <h3 style="color:#fff; margin-top:0;">1. NATUREZA DO SOFTWARE</h3>
+                <p>A NEO é uma ferramenta de interface cliente que conecta o usuário a serviços de inteligência artificial de terceiros. O operador da NEO atua exclusivamente como desenvolvedor da interface, NÃO sendo responsável pelo conteúdo gerado pelas APIs externas.</p>
+                <p>A NEO funciona como um "cliente" (similar a um navegador web) que apenas transmite solicitações do usuário para provedores externos e exibe as respostas, sem qualquer processamento, moderação ou controle sobre o conteúdo.</p>
+
+                <h3 style="color:#fff;">2. PROCESSAMENTO LOCAL E AUSÊNCIA DE COLETA</h3>
+                <p>O usuário declara ciência e concordância de que:</p>
+                <ul>
+                    <li>Todos os dados são armazenados EXCLUSIVAMENTE no dispositivo do usuário (localStorage)</li>
+                    <li>O operador NÃO possui servidores, bancos de dados ou qualquer infraestrutura de armazenamento</li>
+                    <li>O operador NÃO tem acesso técnico, físico ou lógico aos dados do usuário</li>
+                    <li>É tecnicamente impossível para o operador acessar, visualizar, modificar ou excluir qualquer informação do usuário</li>
+                    <li>A desinstalação do aplicativo ou limpeza de dados do dispositivo remove permanentemente todas as informações</li>
+                </ul>
+
+                <h3 style="color:#fff;">3. COMUNICAÇÃO COM TERCEIROS</h3>
+                <p>O usuário reconhece e aceita que:</p>
+                <ul>
+                    <li>A NEO transmite solicitações diretamente do dispositivo do usuário para APIs de terceiros (Google, OpenAI, Anthropic, DeepSeek, etc.)</li>
+                    <li>O operador da NEO NÃO intercepta, armazena, processa ou tem acesso a estas comunicações</li>
+                    <li>A relação de uso das APIs é estabelecida diretamente entre o usuário e o provedor da API</li>
+                    <li>O usuário é o único responsável por fornecer e manter suas próprias chaves de API</li>
+                    <li>O tratamento de dados pelos provedores externos é regido exclusivamente pelos termos de cada provedor</li>
+                </ul>
+
+                <h3 style="color:#fff;">4. RESPONSABILIDADE EXCLUSIVA DO USUÁRIO</h3>
+                <p><strong>O USUÁRIO ASSUME RESPONSABILIDADE INTEGRAL E EXCLUSIVA POR:</strong></p>
+                <ul>
+                    <li>Todo e qualquer conteúdo inserido, solicitado ou gerado através da NEO</li>
+                    <li>O uso, interpretação, aplicação e consequências das respostas obtidas</li>
+                    <li>A veracidade e legalidade das informações fornecidas</li>
+                    <li>Quaisquer decisões tomadas com base nas respostas</li>
+                    <li>O cumprimento das leis aplicáveis em sua jurisdição</li>
+                    <li>O uso das chaves de API de terceiros</li>
+                </ul>
+                <p>O operador da NEO não tem conhecimento, acesso ou controle sobre o uso que cada usuário faz da ferramenta.</p>
+
+                <h3 style="color:#fff;">5. AUSÊNCIA DE CONTROLE SOBRE CONTEÚDO</h3>
+                <p>O usuário reconhece expressamente que:</p>
+                <ul>
+                    <li>A NEO é uma interface de comunicação, análoga a um navegador ou cliente de email</li>
+                    <li>O conteúdo das respostas é gerado integralmente por IAs de terceiros, sobre as quais o operador não tem controle</li>
+                    <li>O operador NÃO desenvolve, treina, ajusta ou controla os modelos de IA utilizados</li>
+                    <li>A responsabilidade pelo conteúdo gerado é do provedor da API e/ou do usuário que solicitou</li>
+                    <li>A NEO não aplica filtros de conteúdo próprios, refletindo diretamente as respostas das APIs</li>
+                </ul>
+
+                <h3 style="color:#fff;">6. DECLARAÇÕES DO USUÁRIO</h3>
+                <p>Ao utilizar a NEO, o usuário DECLARA sob as penas da lei:</p>
+                <ul>
+                    <li>Ser maior de 18 (dezoito) anos e possuir plena capacidade civil</li>
+                    <li>Estar ciente de que utiliza a ferramenta por sua conta e risco</li>
+                    <li>Compreender que respostas de IA podem conter imprecisões ou erros</li>
+                    <li>Não utilizar a ferramenta para fins ilegais em sua jurisdição</li>
+                    <li>Assumir integralmente as consequências de suas ações e decisões</li>
+                    <li>Ter lido, compreendido e concordado com estes termos de forma livre e consciente</li>
+                </ul>
+
+                <h3 style="color:#fff;">7. ISENÇÃO TOTAL DE RESPONSABILIDADE</h3>
+                <p>O OPERADOR DA NEO ESTÁ ISENTO DE QUALQUER RESPONSABILIDADE:</p>
+                <ul>
+                    <li>Pelos conteúdos gerados pelas APIs de terceiros</li>
+                    <li>Por danos diretos, indiretos, incidentais, consequenciais ou punitivos</li>
+                    <li>Por perdas financeiras, profissionais, pessoais ou de qualquer natureza</li>
+                    <li>Por decisões tomadas pelo usuário com base nas respostas</li>
+                    <li>Por uso indevido, ilegal ou antiético da ferramenta</li>
+                    <li>Por indisponibilidade, erros ou falhas das APIs de terceiros</li>
+                    <li>Por violações de termos de uso dos provedores de API pelo usuário</li>
+                </ul>
+                <p>Esta isenção aplica-se na máxima extensão permitida pela legislação aplicável.</p>
+
+                <h3 style="color:#fff;">8. INDENIZAÇÃO</h3>
+                <p>O usuário concorda em defender, indenizar e isentar o operador da NEO de quaisquer reclamações, danos, custos e despesas (incluindo honorários advocatícios) decorrentes de:</p>
+                <ul>
+                    <li>Uso da ferramenta pelo usuário</li>
+                    <li>Violação destes termos pelo usuário</li>
+                    <li>Violação de direitos de terceiros pelo usuário</li>
+                    <li>Conteúdos criados, compartilhados ou disseminados pelo usuário</li>
+                </ul>
+
+                <h3 style="color:#fff;">9. AUSÊNCIA DE GARANTIAS</h3>
+                <p>A NEO é fornecida "NO ESTADO EM QUE SE ENCONTRA" (AS IS) e "CONFORME DISPONÍVEL", sem garantias de qualquer tipo, expressas ou implícitas, incluindo, mas não se limitando a, garantias de comercialização, adequação a um propósito específico, precisão ou não violação.</p>
+
+                <h3 style="color:#fff;">10. PRIVACIDADE</h3>
+                <p>O operador declara, sob compromisso de verdade:</p>
+                <ul>
+                    <li>NÃO coleta dados pessoais dos usuários</li>
+                    <li>NÃO mantém cadastro, registro ou base de dados de usuários</li>
+                    <li>NÃO realiza tratamento de dados pessoais nos termos da LGPD</li>
+                    <li>NÃO tem acesso aos conteúdos armazenados no dispositivo do usuário</li>
+                    <li>NÃO comercializa, compartilha ou transfere dados de usuários</li>
+                </ul>
+
+                <h3 style="color:#fff;">11. MODIFICAÇÕES</h3>
+                <p>O operador reserva-se o direito de modificar estes termos a qualquer momento. O uso continuado após modificações constitui aceitação das alterações.</p>
+
+                <h3 style="color:#fff;">12. ACEITE VINCULANTE</h3>
+                <p>O uso da NEO está condicionado ao aceite expresso, livre, consciente e inequívoco destes Termos. A assinatura digital constitui manifestação de vontade válida e vinculante, com plena eficácia jurídica.</p>
+                <p>O usuário confirma que teve tempo adequado para ler e compreender todos os termos antes de aceitar.</p>
+            </div>
+            
+            <div style="margin-top:20px;">
+                <label style="color:#fff; display:block; margin-bottom:8px;">Nome completo:</label>
+                <input type="text" id="termsUserName" placeholder="Digite seu nome" style="width:100%; padding:12px; border-radius:8px; border:1px solid #333; background:#1a1a1a; color:#fff; font-size:16px; box-sizing:border-box;" />
+            </div>
+            
+            <div style="margin-top:20px;">
+                <label style="color:#fff; display:block; margin-bottom:8px;">Assinatura (desenhe com o dedo):</label>
+                <div style="position:relative; background:#fff; border-radius:8px; overflow:hidden;">
+                    <canvas id="signatureCanvas" style="width:100%; height:120px; touch-action:none;"></canvas>
+                    <button type="button" id="clearSignatureBtn" style="position:absolute; top:5px; right:5px; background:#ff4444; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:12px;">Limpar</button>
+                </div>
+            </div>
+            
+            <div style="margin-top:15px; color:#888;">
+                <span>Data: </span><span id="termsDate"></span>
+            </div>
+            
+            <button type="button" id="acceptTermsBtn" disabled style="width:100%; margin-top:20px; padding:15px; background:#2d5a30; color:#fff; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:not-allowed;">
+                <i class="fa-solid fa-envelope"></i> Assinar e Enviar por Email
+            </button>
+            
+            <p style="color:#666; font-size:12px; text-align:center; margin-top:15px;">Ao clicar, abrirá seu app de email com o PDF anexado. Só clicar enviar!</p>
+        </div>
+    </div>
+
+
+    <!-- Bloqueio biométrico removido - versão web -->
+
+    <!-- Tela de último passo - solicitar permissão -->
+    <div class="blocked-screen" id="blockedScreen">
+        <div class="blocked-content" id="blockedContent">
+            <div class="blocked-icon" id="blockedIcon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h1 class="blocked-title" id="blockedTitle">Acesso Bloqueado</h1>
+            <p class="blocked-subtitle" id="blockedSubtitle">Para começar a usar o NEO, solicite sua permissão de acesso. É rápido e fácil!</p>
+            <div class="blocked-id-box">
+                <span class="blocked-id-label">Seu ID de Usuário:</span>
+                <span class="blocked-id-number" id="blockedIdDisplay">---------</span>
+            </div>
+            <div class="blocked-buttons">
+                <a class="blocked-whatsapp-btn" id="requestAccessBtn" href="#" target="_blank">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Solicitar Permissão
+                </a>
+                <button class="blocked-verify-btn" id="verifyStatusBtn" type="button">
+                    <i class="fa-solid fa-rotate"></i>
+                    Verificar Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Atualização obrigatória removida - versão web -->
+
+    <!-- Modal de entrada de senha removido - versão web -->
+
+    <!-- NOVO: elemento de texto digitado -->
+    <div id="typed-text"></div>
+    
+    <!-- Select de modelo oculto (necessário para compatibilidade com o sistema) -->
+    <select id="modelSelect" class="select-input" style="display: none;">
+        <!-- Google Gemini 3 (mais novos) -->
+        <option value="gemini-3-pro">gemini-3-pro</option>
+        <option value="gemini-3-flash">gemini-3-flash</option>
+        <!-- Google Gemini 2.5 -->
+        <option value="gemini-2.5-flash" selected>gemini-2.5-flash</option>
+        <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+        <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+        <!-- DeepSeek V3.2 -->
+        <option value="deepseek-chat">deepseek-chat</option>
+        <option value="deepseek-reasoner">deepseek-reasoner</option>
+        <!-- OpenAI -->
+        <option value="gpt-4o">gpt-4o</option>
+        <option value="gpt-4o-mini">gpt-4o-mini</option>
+        <option value="gpt-4-turbo">gpt-4-turbo</option>
+        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+        <!-- Anthropic -->
+        <option value="claude-3-5-sonnet-20241022">claude-3.5-sonnet</option>
+        <option value="claude-3-5-haiku-20241022">claude-3.5-haiku</option>
+        <option value="claude-3-opus-20240229">claude-3-opus</option>
+        <!-- Groq -->
+        <option value="llama-3.3-70b-versatile">llama-3.3-70b</option>
+        <option value="llama-3.1-8b-instant">llama-3.1-8b</option>
+        <!-- OpenRouter -->
+        <option value="openrouter/auto">openrouter/auto</option>
+    </select>
+    
+    <!-- Cards de sugestão na tela inicial -->
+    <div id="suggestion-cards" class="suggestion-cards hidden">
+        <div class="suggestion-card" data-index="0">
+            <div class="suggestion-icon"><i class="fa-solid fa-lightbulb"></i></div>
+            <div class="suggestion-text"></div>
+            <div class="suggestion-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        <div class="suggestion-card" data-index="1">
+            <div class="suggestion-icon"><i class="fa-solid fa-compass"></i></div>
+            <div class="suggestion-text"></div>
+            <div class="suggestion-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        <div class="suggestion-card" data-index="2">
+            <div class="suggestion-icon"><i class="fa-solid fa-star"></i></div>
+            <div class="suggestion-text"></div>
+            <div class="suggestion-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+    </div>
+
+    <!-- Tela de chamada de voz - Estilo do App -->
+    <div class="voice-call-overlay" id="voiceCallOverlay">
+        <div class="voice-call-screen">
+            <!-- Botão de velocidade no canto superior direito -->
+            <button class="voice-call-speed-btn" id="voiceCallSpeedBtn" type="button" onclick="cycleVoiceCallSpeed(); vibrate(10);" title="Velocidade da voz">
+                <span id="voiceSpeedLabel">1x</span>
+            </button>
+
+            <!-- Particle Sphere -->
+            <div class="voice-call-orb-container">
+                <div class="voice-call-particle-sphere" id="voiceCallOrb">
+                    <canvas id="particleSphereCanvas"></canvas>
+                </div>
+                <div class="voice-call-status" id="voiceCallStatus">Conectando...</div>
+            </div>
+
+            <!-- Botão de Encerrar -->
+            <div class="voice-call-actions">
+                <button class="voice-call-end-btn" id="voiceCallEndBtn" type="button" onclick="vibrate(20); endVoiceCall();">
+                    <i class="fa-solid fa-phone-flip"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app">
+        <header class="top-bar">
+            <div class="top-bar-pill">
+                <button class="icon-btn chat-btn" type="button" aria-label="Chats">
+                    <i class="fa-solid fa-list"></i>
+                </button>
+
+                <button class="icon-btn temp-chat-btn" type="button" aria-label="Chat Temporário">
+                    <i class="fa-solid fa-user-secret"></i>
+                </button>
+
+                <!-- NOVO: Botão de Modos -->
+                <button class="icon-btn persona-btn" type="button" id="personaBtn" aria-label="Modos"
+                    title="Escolher Modo">
+                    <i class="ph ph-atom" style="font-size: 22px;"></i>
+                </button>
+
+                <button class="icon-btn tools-btn" type="button" id="toolsBtn" aria-label="Ferramentas" title="Ferramentas">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </button>
+
+                <button class="icon-btn settings-btn" type="button" aria-label="Configurações">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+
+            <!-- Menu de Ferramentas Flutuante -->
+            <div class="tools-menu-overlay" id="toolsMenuOverlay"></div>
+            <div class="tools-menu" id="toolsMenu" aria-hidden="true">
+                <div class="tools-menu-grid">
+                    <button class="tools-menu-card" type="button" id="toolsNotesBtn">
+                        <i class="fa-solid fa-note-sticky"></i>
+                        <span>Anotações</span>
+                    </button>
+                    <button class="tools-menu-card" type="button" id="toolsTranscriptionBtn">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                        <span>Transcrições</span>
+                    </button>
+                    <button class="tools-menu-card" type="button" id="toolsCodeBtn" onclick="openCodeStudio()">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Código</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            <div class="messages" id="messages"></div>
+        </main>
+    </div>
+
+    <!-- Botão para cancelar edição de mensagem -->
+    <button type="button" class="cancel-edit-btn" id="cancelEditBtn" aria-label="Cancelar edição">
+        <i class="fa-solid fa-xmark"></i>
+        <span>Cancelar edição</span>
+    </button>
+
+    <!-- Barra de chat -->
+    <form id="chat-form" class="input-bar" autocomplete="off">
+
+        <div class="input-wrapper" id="inputWrapper">
+            <!-- Preview de arquivos anexados (acima dos balões de anexo) -->
+            <div class="attachment-preview" id="attachmentPreview" aria-hidden="true"></div>
+
+            <!-- Botão de anexar (abre menu) -->
+            <button class="attach-btn no-blur-btn" type="button" id="attachBtn" title="Anexar" tabindex="-1">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <input type="file" id="fileInput" accept="application/pdf,image/*" multiple style="display: none;" />
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" />
+
+            <textarea id="user-input" rows="1" placeholder="Digite sua mensagem..."></textarea>
+
+            <!-- Ícone de microfone (só ícone, ao lado do botão enviar) -->
+            <button class="mic-icon-btn no-blur-btn" type="button" id="micBtn" title="Clique para gravar voz"
+                tabindex="-1">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+
+            <button class="send-btn" type="button" id="sendCallBtn" aria-label="Iniciar chamada de voz"
+                title="Iniciar chamada de voz">
+                <div class="send-btn-voice-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <i class="fa-solid fa-location-arrow send-arrow-icon" style="display: none;"></i>
+            </button>
+        </div>
+    </form>
+
+    <!-- Sidebar de Funções - Estilo ChatGPT (FORA do form) -->
+    <div class="attach-sidebar-overlay" id="attachSidebarOverlay"></div>
+    <div class="attach-sidebar" id="attachMenu" aria-hidden="true">
+        
+        <!-- Cards em grade 1x2 -->
+        <div class="attach-sidebar-cards attach-grid-1x2">
+            <button class="attach-card no-blur-btn" type="button" id="attachCameraBtn" onclick="handleAttachCamera()">
+                <i class="fa-solid fa-camera"></i>
+                <span>Câmera</span>
+            </button>
+            <button class="attach-card no-blur-btn" type="button" id="attachFileBtn" onclick="handleAttachFile()">
+                <i class="fa-solid fa-paperclip"></i>
+                <span>Arquivos</span>
+            </button>
+        </div>
+        
+        <!-- Divisor -->
+        <div class="attach-sidebar-divider"></div>
+        
+        <!-- Lista de opções -->
+        <div class="attach-sidebar-list">
+            <button class="attach-list-item no-blur-btn" type="button" id="attachAgentBtn" onclick="toggleAgentMode()">
+                <i class="fa-solid fa-robot"></i>
+                <div class="attach-list-text">
+                    <span class="attach-list-title">Modo agente</span>
+                    <span class="attach-list-subtitle">Executar tarefas automaticamente</span>
+                </div>
+            </button>
+            
+            <button class="attach-list-item no-blur-btn" type="button" id="attachWebSearchBtn" onclick="toggleWebSearchMode()">
+                <i class="fa-solid fa-globe"></i>
+                <div class="attach-list-text">
+                    <span class="attach-list-title">Busca na web</span>
+                    <span class="attach-list-subtitle">Buscar notícias e informações em tempo real</span>
+                </div>
+            </button>
+            
+            <button class="attach-list-item no-blur-btn" type="button" id="attachChartBtn" onclick="toggleChartMode()">
+                <i class="fa-solid fa-chart-line"></i>
+                <div class="attach-list-text">
+                    <span class="attach-list-title">Criar gráfico</span>
+                    <span class="attach-list-subtitle">Visualizar dados e estatísticas</span>
+                </div>
+            </button>
+            
+            <button class="attach-list-item no-blur-btn" type="button" id="attachDocumentBtn" onclick="toggleDocumentMode()">
+                <i class="fa-solid fa-file-lines"></i>
+                <div class="attach-list-text">
+                    <span class="attach-list-title">Criar documento</span>
+                    <span class="attach-list-subtitle">Gerar textos e documentos formatados</span>
+                </div>
+            </button>
+            
+            <button class="attach-list-item no-blur-btn" type="button" id="attachMindMapBtn" onclick="toggleMindMapMode()">
+                <i class="fa-solid fa-diagram-project"></i>
+                <div class="attach-list-text">
+                    <span class="attach-list-title">Mapa mental</span>
+                    <span class="attach-list-subtitle">Organizar ideias visualmente</span>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar de CHATS -->
+    <div class="chat-sidebar-container" id="chatSidebarContainer">
+        <div class="chat-sidebar-overlay" id="chatSidebarOverlay"></div>
+
+        <aside class="chat-sidebar" aria-label="Lista de chats">
+            <h2>Chats</h2>
+
+            <!-- NEW: premium search above NOVO CHAT -->
+            <div class="history-search">
+                <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+                <input id="historySearchInput" class="history-search-input" type="text" aria-label="Buscar no histórico"
+                    placeholder="Buscar por título ou mensagem..." />
+                <button type="button" class="clear-search-btn" id="clearSearchBtn" aria-label="Limpar busca">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <button class="new-chat-btn" type="button" id="newChatBtn">NOVO CHAT</button>
+
+            <div class="divider"></div>
+
+            <!-- NOVO: seção de favoritos -->
+            <div class="favorites-section">
+                <div class="favorites-title">
+                    <i class="fa-solid fa-star"></i>
+                    Favoritos
+                </div>
+                <ul class="favorites-list" id="favoritesList"></ul>
+            </div>
+
+            <div class="divider"></div>
+
+
+
+
+            <div class="history-title">Histórico</div>
+
+            <ul class="history-list" id="historyList"></ul>
+
+            <button class="clear-chats-btn" type="button" id="clearChatsBtn">
+                Limpar chats anteriores
+            </button>
+            <!-- Barra de consumo de tokens -->
+            <div class="history-token-bar">
+                <div class="token-usage-bar">
+                    <div class="token-usage-fill" id="historyTokenUsageFill"></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- TELA DE CONFIGURAÇÕES -->
+    <div class="settings-container" id="settingsContainer">
+        <div class="settings-header" id="settingsHeader">
+            <button class="back-btn" type="button" id="settingsBackBtn" aria-label="Voltar">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <h1 class="settings-title">Configurações</h1>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="settings-content">
+            <!-- Espaçamento para evitar sobreposição com a borda superior -->
+            <div style="height: 16px;"></div>
+
+            <!-- CARD CONFIGURAR IA -->
+            <div class="setting-card-ia" onclick="openLocalLlmModal()">
+                <div class="setting-card-ia-left">
+                    <div class="setting-card-ia-icon">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <div class="setting-card-ia-text">
+                        <span class="setting-card-ia-title">Configurar IA</span>
+                        <span class="setting-card-ia-desc">Configure sua chave API</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right setting-card-ia-arrow"></i>
+            </div>
+
+            <!-- Instruções Personalizadas -->
+            <div class="setting-group">
+                <div class="memory-label">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 6px;"></i>
+                    Instruções Personalizadas
+                </div>
+                <textarea id="styleCustom" class="memory-box"
+                    placeholder="Adicione instruções personalizadas para a IA seguir em todas as conversas. Ex: 'Sempre responda de forma concisa', 'Use exemplos práticos', 'Responda em português formal'..."
+                    rows="4" style="min-height: 80px; resize: vertical;"></textarea>
+            </div>
+
+            <!-- Sliders de personalidade REMOVIDOS - valores fixos para personalidade útil e direta -->
+            <!-- Inputs hidden para manter compatibilidade com JS -->
+            <input type="hidden" id="humorRange" value="3" />
+            <input type="hidden" id="freedomRange" value="4" />
+            <input type="hidden" id="professionalRange" value="8" />
+            <input type="hidden" id="formalidadeRange" value="4" />
+            <!-- styleCustom movido para seção visível na sidebar -->
+
+            <div class="setting-group">
+                <div class="memory-label">Memória</div>
+                <!-- Botão para abrir modal de memória -->
+                <button type="button" class="memory-selector-btn" id="openMemoryEditorBtn">
+                    <div class="memory-selector-content">
+                        <i class="fa-solid fa-brain"></i>
+                        <span class="memory-selector-title">Memória</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right memory-selector-arrow"></i>
+                </button>
+                <!-- Textarea oculto para manter compatibilidade -->
+                <textarea id="memoryText" class="memory-box" style="display: none;"
+                    placeholder="Guarde fatos, preferências e instruções que o Neo deve lembrar e considerar em respostas futuras."></textarea>
+            </div>
+
+            <!-- REMOVIDO: seção de configuração da IA movida para sidebar de código fonte -->
+            <!-- <div class="setting-group">
+                <div class="memory-label">Configuração da IA (texto)</div>
+                ...
+            </div> -->
+
+            <div class="setting-group">
+                <div class="memory-label">Tema</div>
+                <div class="theme-mode-presets">
+                    <button type="button" class="theme-mode-btn" id="themeModeLight" data-theme="light">
+                        <i class="fa-solid fa-sun"></i>
+                        <span>Claro</span>
+                    </button>
+                    <button type="button" class="theme-mode-btn" id="themeModeDark" data-theme="dark">
+                        <i class="fa-solid fa-moon"></i>
+                        <span>Escuro</span>
+                    </button>
+                    <button type="button" class="theme-mode-btn" id="themeModeAuto" data-theme="auto">
+                        <i class="fa-solid fa-circle-half-stroke"></i>
+                        <span>Auto</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="memory-label">Cor do fundo do chat</div>
+                <!-- REMOVIDO: picker visível -->
+                <!-- <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <input id="bgColorPicker" class="color-input" type="color" value="#050014" />
+                </div> -->
+                <div class="color-presets">
+                    <!-- NEW: input escondido para uso do botão Personalizado -->
+                    <input id="bgColorPicker" class="hidden-color-input" type="color" value="#050014" />
+                    <!-- Linha 1: 4 cores -->
+                    <div class="color-row">
+                        <button type="button" class="color-preset-btn preset-custom" id="presetCustom"
+                            title="Personalizado">
+                            <span>Personalizado</span>
+                        </button>
+                        <button type="button" class="color-preset-btn preset-default" id="presetDefault"
+                            data-gradient="default" title="Padrão">
+                            <span>Padrão</span>
+                        </button>
+                        <button type="button" class="color-preset-btn preset-white" id="presetWhite"
+                            data-gradient="white" title="Branco">
+                            <span>Branco</span>
+                        </button>
+                        <button type="button" class="color-preset-btn preset-pink" id="presetPink" data-gradient="pink"
+                            title="Rosa">
+                            <span>Rosa</span>
+                        </button>
+                    </div>
+                    <!-- Linha 2: 4 cores -->
+                    <div class="color-row">
+                        <button type="button" class="color-preset-btn preset-green" id="presetGreen"
+                            data-gradient="green" title="Verde">
+                            <span>Verde</span>
+                        </button>
+                        <button type="button" class="color-preset-btn preset-yellow" id="presetYellow"
+                            data-gradient="yellow" title="Amarelo">
+                            <span>Amarelo</span>
+                        </button>
+                        <button type="button" class="color-preset-btn preset-red" id="presetRed" data-gradient="red"
+                            title="Vermelho">
+                            <span>Vermelho</span>
+                        </button>
+                        <button type="button" class="color-preset-btn preset-black" id="presetBlack"
+                            data-gradient="black" title="Roxo">
+                            <span>Roxo</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOVO: Cor secundária -->
+            <div class="setting-group">
+                <div class="memory-label">Cor secundária</div>
+                <div class="secondary-color-presets">
+                    <input id="secondaryColorPicker" class="hidden-color-input" type="color" value="#ffffff" />
+                    <!-- Linha 1: 4 cores -->
+                    <div class="color-row">
+                        <button type="button" class="secondary-preset-btn secondary-custom" id="secondaryPresetCustom"
+                            title="Personalizado">
+                            <span>Personalizado</span>
+                        </button>
+                        <button type="button" class="secondary-preset-btn secondary-white active"
+                            id="secondaryPresetWhite" title="Branco">
+                            <span>Branco</span>
+                        </button>
+                        <button type="button" class="secondary-preset-btn secondary-black" id="secondaryPresetBlack"
+                            title="Preto">
+                            <span>Preto</span>
+                        </button>
+                        <button type="button" class="secondary-preset-btn secondary-cyan" id="secondaryPresetCyan"
+                            title="Ciano">
+                            <span>Ciano</span>
+                        </button>
+                    </div>
+                    <!-- Linha 2: 4 cores -->
+                    <div class="color-row">
+                        <button type="button" class="secondary-preset-btn secondary-lime" id="secondaryPresetLime"
+                            title="Verde">
+                            <span>Verde</span>
+                        </button>
+                        <button type="button" class="secondary-preset-btn secondary-pink" id="secondaryPresetPink"
+                            title="Rosa">
+                            <span>Rosa</span>
+                        </button>
+                        <button type="button" class="secondary-preset-btn secondary-orange" id="secondaryPresetOrange"
+                            title="Laranja">
+                            <span>Laranja</span>
+                        </button>
+                        <button type="button" class="secondary-preset-btn secondary-red" id="secondaryPresetRed"
+                            title="Vermelho">
+                            <span>Vermelho</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOVO: Fonte do app -->
+            <div class="setting-group">
+                <div class="memory-label">Fonte do app</div>
+                <button type="button" class="font-select-btn" id="fontSelectBtn">
+                    <span class="font-select-preview" id="fontPreviewText">Questrial</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Seção Interface -->
+            <div class="setting-group">
+                <div class="setting-label">Interface</div>
+                <div class="lock-toggle-container">
+                    <div class="lock-toggle-label">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Sugestões no chat</span>
+                    </div>
+                    <div class="lock-toggle" id="suggestionsToggle">
+                        <div class="lock-toggle-knob"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloqueio biométrico removido - versão web -->
+
+            <!-- ID do Usuário -->
+            <div class="user-id-card">
+                <div class="user-id-info">
+                    <span class="user-id-label">Seu ID:</span>
+                    <span class="user-id-number" id="userIdDisplay">---------</span>
+                </div>
+                <button class="user-id-copy" id="copyUserIdBtn" title="Copiar ID">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
+
+            <!-- Botão para baixar cópia dos termos assinados -->
+            <button type="button" class="download-terms-btn" id="downloadTermsBtn">
+                <i class="fa-solid fa-file-contract"></i>
+                Baixar Termos Assinados
+            </button>
+
+            <button type="button" class="reset-params-btn" id="resetParamsBtn" onclick="resetParams()">Reiniciar
+                Parâmetros</button>
+
+            <!-- BOTÃO APAGAR TODOS OS DADOS -->
+            <button type="button" class="danger-wipe-btn" id="dangerWipeBtn">
+                <div class="danger-wipe-progress" id="dangerWipeProgress"></div>
+                <div class="danger-wipe-content">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Apagar dados</span>
+                </div>
+            </button>
+
+            <!-- NOVO: botão cadeado -->
+            <button type="button" class="locked-btn" id="lockedBtn">
+                <i class="fa-solid fa-lock"></i>
+                Código fonte
+            </button>
+        </div>
+    </div>
+
+    <!-- TELA DE ANOTAÇÕES -->
+    <div class="notes-container" id="notesContainer">
+        <div class="notes-header notes-header-premium" id="notesHeader">
+            <button class="back-btn" type="button" id="notesBackBtn" aria-label="Voltar" onclick="closeNotes();">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h1 class="notes-title">Historico</h1>
+            <button class="notes-add-btn" type="button" id="notesFab" aria-label="Nova anotação" onclick="createNote();">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+
+        <div class="notes-content">
+            <!-- Lista de anotações -->
+            <div class="notes-list" id="notesList">
+                <!-- Anotações serão inseridas aqui via JavaScript -->
+            </div>
+
+            <!-- Placeholder quando não há anotações -->
+            <div class="notes-empty" id="notesEmpty">
+                <i class="fa-solid fa-sticky-note"></i>
+                <p>Nenhuma anotação ainda</p>
+                <span>Toque no + para criar uma nova</span>
+            </div>
+        </div>
+
+        <!-- Botão excluir todas as notas - fixo no rodapé -->
+        <div class="notes-footer">
+            <button class="delete-all-notes-btn" type="button" id="deleteAllNotesBtn" onclick="confirmDeleteAllNotes();"
+                style="display: none;">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Excluir todas as anotações</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- TELA DE HISTÓRICO DE TRANSCRIÇÕES -->
+    <div class="transcriptions-history-container" id="transcriptionsHistoryContainer">
+        <div class="transcriptions-history-header">
+            <button class="back-btn" type="button" id="transcriptionsHistoryBackBtn" aria-label="Voltar" onclick="closeTranscriptionsHistory();">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h1 class="transcriptions-history-title">Historico</h1>
+            <div class="transcriptions-history-header-spacer"></div>
+        </div>
+
+        <div class="transcriptions-history-content">
+            <!-- Lista de transcrições -->
+            <div class="transcriptions-history-list" id="transcriptionsHistoryList">
+                <!-- Transcrições serão inseridas aqui via JavaScript -->
+            </div>
+
+            <!-- Placeholder quando não há transcrições -->
+            <div class="transcriptions-history-empty" id="transcriptionsHistoryEmpty">
+                <i class="fa-solid fa-microphone-lines"></i>
+                <p>Nenhuma transcrição ainda</p>
+                <span>Use a transcrição para gravar reuniões</span>
+            </div>
+        </div>
+
+        <!-- Botão excluir todas as transcrições - fixo no rodapé -->
+        <div class="transcriptions-history-footer">
+            <button class="delete-all-transcriptions-btn" type="button" id="deleteAllTranscriptionsBtn" onclick="confirmDeleteAllTranscriptions();"
+                style="display: none;">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Excluir todas as transcrições</span>
+            </button>
+        </div>
+
+        <!-- FAB - Botão flutuante Nova Transcrição -->
+        <button class="transcriptions-fab" type="button" id="transcriptionsFab" aria-label="Nova transcrição" onclick="openTranscriptionPage();">
+            <i class="fa-solid fa-microphone"></i>
+        </button>
+    </div>
+
+    <!-- PÁGINA DE TRANSCRIÇÃO - TELA CHEIA -->
+    <div class="transcription-page" id="transcriptionPage" aria-hidden="true">
+        <div class="transcription-header">
+            <button class="back-btn" type="button" id="transcriptionBackBtn" aria-label="Voltar">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="transcription-header-content">
+                <h1 class="transcription-title">Transcrição</h1>
+                <span class="transcription-subtitle">Reuniões e Aulas</span>
+            </div>
+            <div class="transcription-header-actions">
+                <button class="transcription-screen-off-btn" type="button" id="transcriptionScreenOffBtn" aria-label="Tela desligada" title="Simular tela desligada">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="transcription-clear-btn" type="button" id="transcriptionClearBtn" aria-label="Limpar" title="Limpar transcrição">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="transcription-status-bar">
+            <div class="transcription-status" id="transcriptionStatus">
+                <div class="status-dot"></div>
+                <span>Pronto para transcrever</span>
+            </div>
+            <div class="transcription-timer" id="transcriptionTimer">00:00:00</div>
+        </div>
+
+        <div class="transcription-content" id="transcriptionContent">
+            <div class="transcription-text" id="transcriptionText" contenteditable="false">
+                <div class="transcription-placeholder" id="transcriptionPlaceholder">
+                    <p>Toque em "Transcrever" para começar</p>
+                    <span>Ideal para reuniões, aulas e palestras</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="transcription-actions">
+            <button class="transcription-btn transcribe-btn" type="button" id="startTranscriptionBtn">
+                <div class="btn-icon">
+                    <i class="fa-solid fa-microphone"></i>
+                </div>
+                <div class="btn-content">
+                    <span class="btn-label">Transcrever</span>
+                    <span class="btn-hint">Toque para iniciar</span>
+                </div>
+            </button>
+            <button class="transcription-btn summarize-btn" type="button" id="summarizeTranscriptionBtn" disabled>
+                <div class="btn-glow"></div>
+                <div class="btn-icon">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div class="btn-content">
+                    <span class="btn-label">Resumir com IA</span>
+                    <span class="btn-hint">Analisa e resume tudo</span>
+                </div>
+            </button>
+        </div>
+
+        <!-- Tela falsa desligada -->
+        <div class="fake-screen-off" id="fakeScreenOff"></div>
+    </div>
+
+    <!-- EDITOR DE ANOTAÇÃO - TELA CHEIA -->
+    <div class="note-editor-overlay" id="noteEditorOverlay" aria-hidden="true">
+        <div class="note-editor-modal">
+            <div class="note-editor-header">
+                <button type="button" class="note-editor-close-btn" id="noteEditorCloseBtn"
+                    onclick="saveCurrentNote();">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <input type="text" class="note-title-input" id="noteTitleInput" placeholder="Título..." />
+                <div class="note-header-actions">
+                    <button type="button" class="note-download-btn" id="noteDownloadBtn" onclick="openNoteDownloadMenu();"
+                        title="Baixar nota">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                    <button type="button" class="note-ai-btn" id="noteAiBtn" onclick="openAiImproveModal();"
+                        title="Melhorar com IA">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="note-editor-content">
+                <div class="note-text-input" id="noteTextInput" contenteditable="true"
+                    data-placeholder="Comece a escrever..."></div>
+            </div>
+
+            <!-- Barra de ferramentas de formatação -->
+            <div class="note-toolbar" id="noteToolbar">
+                <div class="note-toolbar-scroll">
+                    <!-- Grupo: Undo/Redo -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn" id="noteUndoBtn" onclick="noteUndo();"
+                            title="Desfazer (Ctrl+Z)">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" id="noteRedoBtn" onclick="noteRedo();"
+                            title="Refazer (Ctrl+Shift+Z)">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Grupo: Estilo de texto -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn" data-command="bold" title="Negrito"
+                            onclick="executeNoteCommand('bold')">
+                            <i class="fa-solid fa-bold"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-command="italic" title="Itálico"
+                            onclick="executeNoteCommand('italic')">
+                            <i class="fa-solid fa-italic"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-command="underline" title="Sublinhado"
+                            onclick="executeNoteCommand('underline')">
+                            <i class="fa-solid fa-underline"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-command="strikeThrough"
+                            title="Tachado" onclick="executeNoteCommand('strikeThrough')">
+                            <i class="fa-solid fa-strikethrough"></i>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Grupo: Tamanho da fonte -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn toolbar-size-btn" id="fontSizeBtn" title="Tamanho"
+                            onclick="toggleNoteFontSize()">
+                            <span class="size-value">18</span>
+                        </button>
+                        <div class="toolbar-dropdown size-dropdown" id="fontSizeDropdown">
+                            <button type="button" class="size-opt" data-size="10" onclick="selectNoteSize(10)">10</button>
+                            <button type="button" class="size-opt" data-size="12" onclick="selectNoteSize(12)">12</button>
+                            <button type="button" class="size-opt" data-size="14" onclick="selectNoteSize(14)">14</button>
+                            <button type="button" class="size-opt" data-size="16" onclick="selectNoteSize(16)">16</button>
+                            <button type="button" class="size-opt selected" data-size="18" onclick="selectNoteSize(18)">18</button>
+                            <button type="button" class="size-opt" data-size="20" onclick="selectNoteSize(20)">20</button>
+                            <button type="button" class="size-opt" data-size="24" onclick="selectNoteSize(24)">24</button>
+                            <button type="button" class="size-opt" data-size="28" onclick="selectNoteSize(28)">28</button>
+                            <button type="button" class="size-opt" data-size="32" onclick="selectNoteSize(32)">32</button>
+                            <button type="button" class="size-opt" data-size="36" onclick="selectNoteSize(36)">36</button>
+                            <button type="button" class="size-opt" data-size="40" onclick="selectNoteSize(40)">40</button>
+                            <button type="button" class="size-opt" data-size="44" onclick="selectNoteSize(44)">44</button>
+                            <button type="button" class="size-opt" data-size="50" onclick="selectNoteSize(50)">50</button>
+                        </div>
+                    </div>
+
+                    <!-- Grupo: Cor do texto -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn toolbar-color-btn" id="textColorBtn" title="Cor"
+                            onclick="toggleNoteColor()">
+                            <i class="fa-solid fa-font"></i>
+                            <span class="color-bar" id="colorBar"></span>
+                        </button>
+                        <div class="toolbar-dropdown color-dropdown" id="textColorDropdown">
+                            <div class="note-color-row-horizontal">
+                                <button type="button" class="color-dot" data-color="#ffffff" onclick="selectNoteColor('#ffffff')"></button>
+                                <button type="button" class="color-dot" data-color="#000000" onclick="selectNoteColor('#000000')"></button>
+                                <button type="button" class="color-dot" data-color="#f44336" onclick="selectNoteColor('#f44336')"></button>
+                                <button type="button" class="color-dot" data-color="#e91e63" onclick="selectNoteColor('#e91e63')"></button>
+                                <button type="button" class="color-dot" data-color="#9c27b0" onclick="selectNoteColor('#9c27b0')"></button>
+                                <button type="button" class="color-dot" data-color="#2196f3" onclick="selectNoteColor('#2196f3')"></button>
+                                <button type="button" class="color-dot" data-color="#00bcd4" onclick="selectNoteColor('#00bcd4')"></button>
+                                <button type="button" class="color-dot" data-color="#4caf50" onclick="selectNoteColor('#4caf50')"></button>
+                                <button type="button" class="color-dot" data-color="#ffeb3b" onclick="selectNoteColor('#ffeb3b')"></button>
+                                <button type="button" class="color-dot" data-color="#ff9800" onclick="selectNoteColor('#ff9800')"></button>
+                                <button type="button" class="color-dot color-rainbow" data-color="custom" onclick="openNoteCustomColor()"></button>
+                            </div>
+                            <input type="color" id="customColorPicker" class="custom-color-input" onchange="applyNoteCustomColor(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Grupo: Alinhamento -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn" data-command="justifyLeft" title="Alinhar à esquerda"
+                            onclick="executeNoteCommand('justifyLeft')">
+                            <i class="fa-solid fa-align-left"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-command="justifyCenter" title="Centralizar"
+                            onclick="executeNoteCommand('justifyCenter')">
+                            <i class="fa-solid fa-align-center"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-command="justifyRight" title="Alinhar à direita"
+                            onclick="executeNoteCommand('justifyRight')">
+                            <i class="fa-solid fa-align-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Grupo: Listas -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn" data-command="insertUnorderedList"
+                            title="Lista com marcadores" onclick="executeNoteCommand('insertUnorderedList')">
+                            <i class="fa-solid fa-list-ul"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-command="insertOrderedList"
+                            title="Lista numerada" onclick="executeNoteCommand('insertOrderedList')">
+                            <i class="fa-solid fa-list-ol"></i>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Grupo: Extras -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn" data-command="indent" title="Aumentar recuo"
+                            onclick="executeNoteCommand('indent')">
+                            <i class="fa-solid fa-indent"></i>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-command="outdent" title="Diminuir recuo"
+                            onclick="executeNoteCommand('outdent')">
+                            <i class="fa-solid fa-outdent"></i>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <!-- Grupo: Limpar formatação -->
+                    <div class="toolbar-group">
+                        <button type="button" class="toolbar-btn" data-command="removeFormat" title="Limpar formatação"
+                            onclick="executeNoteCommand('removeFormat')">
+                            <i class="fa-solid fa-eraser"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu de Download de Nota -->
+    <div class="note-download-menu-overlay" id="noteDownloadMenuOverlay" onclick="closeNoteDownloadMenu(event);">
+        <div class="note-download-menu" onclick="event.stopPropagation();">
+            <div class="note-download-menu-title">Baixar nota como</div>
+            <button type="button" class="note-download-option pdf" onclick="downloadNoteAsPDF();">
+                <i class="fa-solid fa-file-pdf"></i>
+                <div class="note-download-option-text">
+                    <strong>PDF</strong>
+                    <span>Documento para impressão</span>
+                </div>
+            </button>
+            <button type="button" class="note-download-option png" onclick="downloadNoteAsPNG();">
+                <i class="fa-solid fa-image"></i>
+                <div class="note-download-option-text">
+                    <strong>PNG</strong>
+                    <span>Imagem para compartilhar</span>
+                </div>
+            </button>
+            <button type="button" class="note-download-cancel" onclick="closeNoteDownloadMenu();">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal de IA para melhorar texto -->
+    <div class="ai-modal-overlay" id="aiImproveModal">
+        <div class="ai-modal">
+            <div class="ai-modal-header">
+                <div class="ai-modal-title">
+                    <div class="ai-icon-wrapper">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div class="ai-title-text">
+                        <span class="ai-title-main">Assistente IA</span>
+                        <span class="ai-title-sub">Texto otimizado</span>
+                    </div>
+                </div>
+                <button type="button" class="ai-modal-close" onclick="closeAiImproveModal();">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="ai-modal-content">
+                <div class="ai-loading" id="aiImproveLoading">
+                    <div class="ai-loading-orb">
+                        <div class="ai-orb-ring"></div>
+                        <div class="ai-orb-ring"></div>
+                        <div class="ai-orb-ring"></div>
+                    </div>
+                    <span class="ai-loading-text">Analisando e otimizando...</span>
+                </div>
+                <div class="ai-result" id="aiImproveResult"></div>
+            </div>
+            <div class="ai-modal-actions" id="aiImproveActions">
+                <button type="button" class="ai-btn-secondary" onclick="closeAiImproveModal();">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Descartar</span>
+                </button>
+                <button type="button" class="ai-btn-primary" onclick="applyAiImprovedText();">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Aplicar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação para excluir nota -->
+    <div class="delete-note-modal-overlay" id="deleteNoteModal" aria-hidden="true">
+        <div class="delete-note-modal" role="dialog" aria-modal="true">
+            <div class="delete-note-modal-icon">
+                <i class="fa-solid fa-trash"></i>
+            </div>
+            <div class="delete-note-modal-title">Excluir esta anotação?</div>
+            <div class="delete-note-modal-text">Esta ação não pode ser desfeita.</div>
+            <div class="delete-note-modal-actions">
+                <button type="button" class="delete-note-modal-btn delete-note-modal-btn-cancel"
+                    onclick="closeDeleteNoteModal();">
+                    Cancelar
+                </button>
+                <button type="button" class="delete-note-modal-btn delete-note-modal-btn-confirm"
+                    onclick="confirmDeleteNoteAction();">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para visualizar transcrição completa -->
+    <div class="transcription-modal-overlay" id="transcriptionModal" aria-hidden="true">
+        <div class="transcription-modal">
+            <div class="transcription-modal-header">
+                <button type="button" class="transcription-modal-close" onclick="closeTranscriptionModal();">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div>
+                    <h2 class="transcription-modal-title" id="transcriptionModalTitle">Transcrição</h2>
+                    <p class="transcription-modal-date" id="transcriptionModalDate">Data</p>
+                </div>
+            </div>
+            <div class="transcription-modal-content" id="transcriptionModalContent">
+                <!-- Conteúdo será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: sidebar "Código fonte" -->
+    <div class="code-source-sidebar-overlay" id="codeSourceOverlay" aria-hidden="true">
+        <aside class="code-source-sidebar" aria-label="Código fonte">
+            <div class="code-source-header">
+                <button type="button" class="code-source-close-btn" id="codeSourceCloseBtn" aria-label="Fechar">
+                    &#x276E;
+                </button>
+                <h2 class="code-source-title">código fonte</h2>
+                <!-- Relógio em tempo real -->
+                <div class="code-source-clock" id="codeSourceClock">
+                    <i class="fa-solid fa-clock"></i>
+                    <span id="clockTime">00:00:00</span>
+                </div>
+            </div>
+
+            <!-- CARD: CHAVES API -->
+            <div class="source-card">
+                <div class="source-card-header">
+                    <i class="fa-solid fa-key"></i>
+                    <h3 class="source-card-title">Chaves de API</h3>
+                </div>
+                <div class="source-card-content">
+                    <small style="opacity: 0.6; margin-bottom: 8px; display: block;">Configure as chaves de IA em Configurações &gt; Configurar IA.</small>
+                    
+                    <div class="api-keys-section">
+                    <!-- SERP API -->
+                    <div class="api-provider-group" data-provider="serp">
+                        <label class="sub-label">
+                            <img src="https://avatars.githubusercontent.com/u/34724717?s=280&v=4" alt=""
+                                class="api-label-icon">
+                            SERP API (Busca)
+                            <a href="https://serpapi.com/manage-api-key" target="_blank"
+                                class="get-api-key-btn-inline" title="Obter chave">
+                                <i class="fa-solid fa-key"></i>
+                            </a>
+                            <button type="button" class="add-api-key-btn" onclick="addApiKeyInput('serp')"
+                                title="Adicionar mais uma chave">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </label>
+
+                        <!-- Contador de uso SERP -->
+                        <div class="google-search-usage" id="serpApiUsage">
+                            <div class="search-usage-bar">
+                                <div class="search-usage-fill" id="serpUsageFill"></div>
+                            </div>
+                            <div class="search-usage-text">
+                                <span id="serpUsedCount">0</span> / <span id="serpLimitCount">200</span> buscas/mês
+                            </div>
+                        </div>
+
+                        <div class="api-keys-list" id="serp-keys-list">
+                            <div class="api-key-row">
+                                <span class="api-key-number">1</span>
+                                <input class="api-key-input" type="text" placeholder="Chave SERP API..."
+                                    data-provider="serp" value="" />
+                                <button type="button" class="remove-api-key-btn" onclick="removeApiKeyInput(this)"
+                                    title="Remover" style="display:none;">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Botão de testar SERP API -->
+                        <button type="button" class="test-voice-btn" id="testSerpBtn" style="margin-top: 8px;">
+                            <i class="fa-solid fa-magnifying-glass"></i> Testar busca
+                        </button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD: SÍNTESE DE VOZ -->
+            <div class="source-card">
+                <div class="source-card-header">
+                    <i class="fa-solid fa-volume-high"></i>
+                    <h3 class="source-card-title">Síntese de Voz (Chamada)</h3>
+                </div>
+                <div class="source-card-content">
+                    <!-- Seletor de provedor de voz -->
+                    <label class="sub-label" for="voiceProviderSelect">Provedor de voz</label>
+                    <select id="voiceProviderSelect" class="select-input">
+                        <option value="local">🎙️ TTS Local (Offline/Realista)</option>
+                        <option value="native">Voz Nativa (Grátis/Offline)</option>
+                        <option value="google">Google TTS (Grátis)</option>
+                    </select>
+
+                    <!-- Config TTS Local -->
+                    <div id="localTtsConfig" style="margin-top: 12px;">
+                        <div class="voice-info-box" style="background: linear-gradient(135deg, #1a2a1a 0%, #0a1a0a 100%); border: 1px solid #2d5a2d;">
+                            <i class="fa-solid fa-brain" style="color: #4ade80;"></i>
+                            <span>Voz neural ultra realista incluída no app!</span>
+                        </div>
+                        
+                        <!-- Status do modelo Piper (bundled) -->
+                        <div id="piperModelSection" style="margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #0a2a0a 0%, #051505 100%); border-radius: 8px; border: 1px solid #2d5a2d;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-microphone-lines" style="color: #4ade80;"></i>
+                                <span style="font-weight: 600; color: #fff;">Voz Neural Faber (Masculino BR)</span>
+                            </div>
+                            <p id="piperModelStatus" style="font-size: 12px; color: #4ade80; margin-bottom: 8px;">✅ Voz neural pronta!</p>
+                            <button type="button" id="downloadPiperModelBtn" class="test-voice-btn" style="background: linear-gradient(135deg, #0a2a0a 0%, #051505 100%); border: 1px solid #2d5a2d; width: 100%; cursor: default;" disabled>
+                                <i class="fa-solid fa-check"></i> Voz Neural Incluída
+                            </button>
+                            <div id="piperDownloadProgress" style="display: none; margin-top: 8px;">
+                                <div style="background: #222; border-radius: 4px; height: 6px; overflow: hidden;">
+                                    <div id="piperProgressBar" style="background: linear-gradient(90deg, #4ade80, #22c55e); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                                </div>
+                                <p id="piperProgressText" style="font-size: 11px; color: #888; margin-top: 4px; text-align: center;">0%</p>
+                            </div>
+                        </div>
+                        
+                        <label class="sub-label" style="margin-top: 12px;">Ou selecione uma voz do sistema</label>
+                        <select id="localVoiceSelect" class="select-input">
+                            <option value="">Carregando vozes...</option>
+                        </select>
+                        <button type="button" class="test-voice-btn" id="openVoiceSettingsBtn" style="background: linear-gradient(135deg, #2d5a2d 0%, #1a3a1a 100%); border: 1px solid #3d7a3d; margin-top: 8px;">
+                            <i class="fa-solid fa-gear"></i> Abrir Configurações de Voz
+                        </button>
+                        <p style="font-size: 11px; color: #4ade80; margin-top: 8px; line-height: 1.4;">
+                            🎤 Voz Piper neural 100% offline com qualidade premium!
+                        </p>
+                    </div>
+
+                    <!-- Seletor de voz nativa do sistema -->
+                    <div id="nativeVoiceConfig">
+                        <label class="sub-label" for="nativeVoiceSelect">Voz do Sistema</label>
+                        <select id="nativeVoiceSelect" class="select-input">
+                            <option value="">Carregando vozes...</option>
+                        </select>
+                    </div>
+
+                    <!-- Botão de testar voz (todos os provedores) -->
+                    <button type="button" class="test-voice-btn" id="testVoiceProviderBtn" style="margin-top: 8px;">
+                        <i class="fa-solid fa-play"></i> Testar voz
+                    </button>
+
+                    <!-- Info Google TTS -->
+                    <div id="googleTtsInfo" style="display: none;">
+                        <div class="voice-info-box">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Google TTS usa a voz padrão do Google Translate. É gratuito e não requer chave API.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD: DEBUG -->
+            <div class="source-card">
+                <div class="source-card-header">
+                    <i class="fa-solid fa-bug"></i>
+                    <h3 class="source-card-title">Debug & Logs</h3>
+                </div>
+                <div class="source-card-content">
+                    <button type="button" class="debug-log-btn" id="openDebugLogBtn">
+                        <i class="fa-solid fa-terminal"></i> Abrir Console de Debug
+                    </button>
+                </div>
+            </div>
+
+            <div class="code-source-footer">
+                <button type="button" class="code-source-cancel-btn" id="codeSourceCancelBtn">Cancelar</button>
+                <button type="button" class="code-source-save-btn" id="codeSourceSaveBtn">Salvar</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modal de senha estilo PIN premium -->
+    <div class="pin-modal-overlay" id="codePasswordOverlay" aria-hidden="true">
+        <div class="pin-modal" role="dialog" aria-modal="true" aria-labelledby="codePasswordTitle">
+            <div class="pin-modal-header">
+                <div class="pin-modal-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="pin-modal-title" id="codePasswordTitle">Acesso Restrito</div>
+                <div class="pin-modal-subtitle">Digite o código de segurança</div>
+            </div>
+
+            <div class="pin-display">
+                <div class="pin-dots" id="pinDotsContainer">
+                    <!-- Bolinhas geradas dinamicamente -->
+                </div>
+                <div class="pin-error" id="codePasswordError"></div>
+            </div>
+
+            <input type="hidden" id="codePasswordInput" />
+
+            <div class="pin-keypad">
+                <button type="button" class="pin-key" data-value="1">1</button>
+                <button type="button" class="pin-key" data-value="2">2</button>
+                <button type="button" class="pin-key" data-value="3">3</button>
+                <button type="button" class="pin-key" data-value="4">4</button>
+                <button type="button" class="pin-key" data-value="5">5</button>
+                <button type="button" class="pin-key" data-value="6">6</button>
+                <button type="button" class="pin-key" data-value="7">7</button>
+                <button type="button" class="pin-key" data-value="8">8</button>
+                <button type="button" class="pin-key" data-value="9">9</button>
+                <button type="button" class="pin-key pin-key-cancel" id="codePasswordCancelBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button type="button" class="pin-key" data-value="0">0</button>
+                <button type="button" class="pin-key pin-key-delete" data-action="delete">
+                    <i class="fas fa-backspace"></i>
+                </button>
+            </div>
+
+            <button type="hidden" id="codePasswordConfirmBtn" style="display:none;"></button>
+        </div>
+    </div>
+
+    <!-- Modal Premium de Seleção de Modelo -->
+    <div class="model-selector-modal-overlay" id="modelSelectorModal" aria-hidden="true">
+        <div class="model-selector-modal" role="dialog" aria-modal="true" aria-labelledby="modelSelectorTitle">
+            <div class="model-selector-header">
+                <h2 class="model-selector-title" id="modelSelectorTitle">
+                    <i class="fa-solid fa-microchip"></i>
+                    Selecionar Modelo
+                </h2>
+                <button type="button" class="model-selector-close" id="closeModelSelectorBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="model-selector-info">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Selecione um modelo de linguagem</span>
+            </div>
+
+            <div class="model-selector-list" id="modelSelectorList">
+                <!-- DeepSeek Models -->
+                <div class="model-group">
+                    <div class="model-group-title">
+                        <img src="https://images.seeklogo.com/logo-png/61/2/deepseek-ai-icon-logo-png_seeklogo-611473.png" alt="DeepSeek"
+                            class="model-provider-icon">
+                        DeepSeek
+                    </div>
+                    <div class="model-option" data-model="deepseek-chat" data-provider="deepseek">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">deepseek-chat</span>
+                            <span class="model-option-desc">DeepSeek V3.2 - Rápido e eficiente</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="deepseek-reasoner" data-provider="deepseek">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">deepseek-reasoner</span>
+                            <span class="model-option-desc">DeepSeek V3.2 - Modo Raciocínio</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Gemini Models -->
+                <div class="model-group">
+                    <div class="model-group-title">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png" alt="Google"
+                            class="model-provider-icon">
+                        Google Gemini
+                    </div>
+                    <div class="model-option" data-model="gemini-3-pro" data-provider="gemini">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gemini-3-pro</span>
+                            <span class="model-option-desc">🏆 Mais inteligente do mundo</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="gemini-3-flash" data-provider="gemini">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gemini-3-flash</span>
+                            <span class="model-option-desc">⚡ Velocidade + Inteligência</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="gemini-2.5-flash" data-provider="gemini">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gemini-2.5-flash</span>
+                            <span class="model-option-desc">Rápido e econômico (Padrão)</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="gemini-2.5-flash-lite" data-provider="gemini">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gemini-2.5-flash-lite</span>
+                            <span class="model-option-desc">Ultra rápido e mais barato</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="gemini-2.5-pro" data-provider="gemini">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gemini-2.5-pro</span>
+                            <span class="model-option-desc">🧠 Raciocínio avançado</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                </div>
+
+                <!-- OpenAI Models -->
+                <div class="model-group">
+                    <div class="model-group-title">
+                        <img src="https://1millionbot.com/wp-content/uploads/2023/03/ChatGPT_logo.png" alt="OpenAI"
+                            class="model-provider-icon">
+                        OpenAI
+                    </div>
+                    <div class="model-option" data-model="gpt-4o" data-provider="openai">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gpt-4o</span>
+                            <span class="model-option-desc">Mais avançado, multimodal</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="gpt-4o-mini" data-provider="openai">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gpt-4o-mini</span>
+                            <span class="model-option-desc">Rápido e econômico</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="gpt-4-turbo" data-provider="openai">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gpt-4-turbo</span>
+                            <span class="model-option-desc">GPT-4 otimizado</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="gpt-3.5-turbo" data-provider="openai">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">gpt-3.5-turbo</span>
+                            <span class="model-option-desc">Clássico e barato</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Anthropic Claude Models -->
+                <div class="model-group">
+                    <div class="model-group-title">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Claude_AI_symbol.svg" alt="Anthropic"
+                            class="model-provider-icon">
+                        Anthropic Claude
+                    </div>
+                    <div class="model-option" data-model="claude-3-5-sonnet-20241022" data-provider="anthropic">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">claude-3.5-sonnet</span>
+                            <span class="model-option-desc">Melhor custo-benefício</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="claude-3-5-haiku-20241022" data-provider="anthropic">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">claude-3.5-haiku</span>
+                            <span class="model-option-desc">Mais rápido</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="claude-3-opus-20240229" data-provider="anthropic">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">claude-3-opus</span>
+                            <span class="model-option-desc">Mais inteligente</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Groq Models (Free) -->
+                <div class="model-group">
+                    <div class="model-group-title">
+                        <img src="https://play-lh.googleusercontent.com/dQRKhi30KpzG3gww3TdVLzyIAVuOAWylnAcgnEUxqfpm2A8dEt2sgApVvtKAy-DO8aI" alt="Groq"
+                            class="model-provider-icon">
+                        Groq <span class="model-badge free">GRÁTIS</span>
+                    </div>
+                    <div class="model-option" data-model="llama-3.3-70b-versatile" data-provider="groq">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">llama-3.3-70b</span>
+                            <span class="model-option-desc">Llama 3.3 70B - Muito capaz</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    <div class="model-option" data-model="llama-3.1-8b-instant" data-provider="groq">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">llama-3.1-8b</span>
+                            <span class="model-option-desc">Ultra rápido</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                </div>
+
+                <!-- OpenRouter -->
+                <div class="model-group">
+                    <div class="model-group-title">
+                        <img src="https://images.seeklogo.com/logo-png/61/1/openrouter-logo-png_seeklogo-611674.png" alt="OpenRouter"
+                            class="model-provider-icon">
+                        OpenRouter
+                    </div>
+                    <div class="model-option" data-model="openrouter/auto" data-provider="openrouter">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name">auto</span>
+                            <span class="model-option-desc">Escolha automática do melhor modelo</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Modelo Customizado -->
+                <div class="model-group" id="customModelGroup">
+                    <div class="model-group-title">
+                        <i class="fa-solid fa-cog model-provider-icon" style="font-size: 20px; color: #888;"></i>
+                        Modelo Customizado <span class="model-badge">AVANÇADO</span>
+                    </div>
+                    <div class="model-option" data-model="custom-model" data-provider="custom" id="customModelOption">
+                        <div class="model-status-indicator"></div>
+                        <div class="model-option-content">
+                            <span class="model-option-name" id="customModelDisplayName">Não configurado</span>
+                            <span class="model-option-desc" id="customModelDisplayDesc">Configure seu próprio modelo</span>
+                        </div>
+                        <i class="fa-solid fa-check model-selected-icon"></i>
+                    </div>
+                    
+                    <!-- Form de configuração inline -->
+                    <div class="custom-model-config" id="customModelConfig" style="display: none; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 8px;">
+                        <div style="margin-bottom: 10px;">
+                            <label style="display: block; font-size: 12px; color: #aaa; margin-bottom: 4px;">Nome do Modelo</label>
+                            <input type="text" id="customModelNameInput" placeholder="ex: gpt-4o, claude-3, llama-3.1-70b" 
+                                   style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #1a1a1a; color: #fff; font-size: 14px;">
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label style="display: block; font-size: 12px; color: #aaa; margin-bottom: 4px;">Chave API</label>
+                            <input type="password" id="customApiKeyInput" placeholder="sk-..." 
+                                   style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #1a1a1a; color: #fff; font-size: 14px;">
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label style="display: block; font-size: 12px; color: #aaa; margin-bottom: 4px;">Endpoint (URL da API)</label>
+                            <input type="text" id="customEndpointInput" placeholder="https://api.example.com/v1/chat/completions" 
+                                   style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #1a1a1a; color: #fff; font-size: 14px;">
+                        </div>
+                        <div style="font-size: 11px; color: #888; margin-bottom: 10px;">
+                            ⚠️ Use APIs compatíveis com formato OpenAI (ex: Together AI, Fireworks, LocalAI, Ollama)
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" id="saveCustomModelBtn" 
+                                    style="flex: 1; padding: 8px; border-radius: 6px; border: none; background: #4CAF50; color: #fff; cursor: pointer; font-weight: bold;">
+                                <i class="fa-solid fa-save"></i> Salvar
+                            </button>
+                            <button type="button" id="testCustomModelBtn" 
+                                    style="flex: 1; padding: 8px; border-radius: 6px; border: none; background: #2196F3; color: #fff; cursor: pointer;">
+                                <i class="fa-solid fa-flask"></i> Testar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de saída personalizado (mantido, mas não será mostrado) -->
+    <div class="exit-modal-overlay" id="exitModal" aria-hidden="true">
+        <div class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exitModalTitle">
+            <div class="exit-modal-title" id="exitModalTitle">Você deseja sair do app?</div>
+            <div class="exit-modal-actions">
+                <button type="button" class="btn btn-stay" id="btnStay">Ficar</button>
+                <button type="button" class="btn btn-exit" id="btnExit">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de limpeza do histórico (mantido) -->
+    <div class="history-modal-overlay" id="historyModal" aria-hidden="true">
+        <div class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+            <div class="exit-modal-title" id="historyModalTitle">Você deseja limpar o histórico de chats?
+            </div>
+            <div class="exit-modal-actions">
+                <button type="button" class="btn btn-stay" id="btnCancelHistory">Cancelar</button>
+                <button type="button" class="btn btn-exit" id="btnConfirmHistory">Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal de confirmação para deletar chat individual -->
+    <div class="delete-chat-modal-overlay" id="deleteChatModal" aria-hidden="true">
+        <div class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="deleteChatModalTitle">
+            <div class="exit-modal-title" id="deleteChatModalTitle">Deletar este chat?</div>
+            <div class="exit-modal-actions">
+                <button type="button" class="btn btn-stay" id="btnCancelDeleteChat">Cancelar</button>
+                <button type="button" class="btn btn-exit" id="btnConfirmDeleteChat">Deletar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de saída (novo) -->
+    <div class="exit-toast" id="exitToast">Clique novamente para sair</div>
+
+    <!-- NOVO: Tela de câmera premium -->
+    <div class="camera-overlay" id="cameraOverlay" aria-hidden="true">
+        <div class="camera-screen">
+            <!-- Botão fechar (canto superior direito) -->
+            <button class="camera-close-btn" type="button" id="cameraCloseBtn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Preview da câmera -->
+            <div class="camera-preview-container">
+                <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
+                <canvas class="camera-canvas" id="cameraCanvas"></canvas>
+
+                <!-- Overlay de foco -->
+                <div class="camera-focus-overlay" id="cameraFocusOverlay">
+                    <div class="camera-focus-ring"></div>
+                </div>
+
+                <!-- Preview da foto tirada -->
+                <div class="camera-photo-preview" id="cameraPhotoPreview">
+                    <img id="cameraPhotoImg" alt="Foto capturada" />
+                </div>
+            </div>
+
+            <!-- Controles da câmera -->
+            <div class="camera-controls">
+                <!-- Modo preview (após tirar foto) -->
+                <div class="camera-preview-controls" id="cameraPreviewControls">
+                    <button class="camera-retry-btn" type="button" id="cameraRetryBtn">
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                        <span>Tirar outra</span>
+                    </button>
+                    <button class="camera-confirm-btn" type="button" id="cameraConfirmBtn">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Usar foto</span>
+                    </button>
+                </div>
+
+                <!-- Modo captura -->
+                <div class="camera-capture-controls" id="cameraCaptureControls">
+                    <div class="camera-shutter-row">
+                        <div class="camera-shutter-spacer"></div>
+                        <button class="camera-shutter-btn" type="button" id="cameraShutterBtn">
+                            <div class="camera-shutter-ring"></div>
+                            <div class="camera-shutter-center"></div>
+                        </button>
+                        <button class="camera-switch-btn" type="button" id="cameraSwitchBtn" title="Trocar câmera">
+                            <i class="fa-solid fa-camera-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Modos -->
+    <div class="persona-modal-overlay" id="personaModal" aria-hidden="true">
+        <div class="persona-modal" role="dialog" aria-modal="true">
+            <div class="persona-modal-header">
+                <h2 class="persona-modal-title">
+                    <i class="ph ph-atom"></i>
+                    Escolher Modo
+                </h2>
+                <button type="button" class="persona-modal-close" id="closePersonaBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="persona-modal-subtitle">Como você quer que o Neo atue?</div>
+            <div class="persona-grid" id="personaGrid">
+                <!-- Automático -->
+                <div class="persona-card" data-persona="auto">
+                    <div class="persona-icon">
+                        <i class="ph ph-atom"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Automático</div>
+                        <div class="persona-desc">Detecta a necessidade e adapta o comportamento automaticamente</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Advogado -->
+                <div class="persona-card" data-persona="advogado">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Advogado</div>
+                        <div class="persona-desc">Expert em todas áreas jurídicas. Encontra brechas e soluções. Perder
+                            não é opção.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Especialista da Saúde -->
+                <div class="persona-card" data-persona="saude">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Especialista da Saúde</div>
+                        <div class="persona-desc">Investiga sintomas profundamente, busca causas e soluções com cautela
+                            médica</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Marketeiro -->
+                <div class="persona-card" data-persona="marketeiro">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Marketeiro</div>
+                        <div class="persona-desc">Criativo e persuasivo. PNL, cores, emoções. Estilo Edward Bernays.
+                            Humilha a concorrência.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Conselheiro -->
+                <div class="persona-card" data-persona="conselheiro">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Conselheiro</div>
+                        <div class="persona-desc">Equilibra fatos com sabedoria. Ideias estratégicas para as melhores
+                            decisões.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Amigo -->
+                <div class="persona-card" data-persona="amigo">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-face-smile"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Amigo</div>
+                        <div class="persona-desc">Descontraído e companheiro. Sempre interessado em desenvolver assuntos
+                            do seu interesse.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Programador -->
+                <div class="persona-card" data-persona="programador">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Programador</div>
+                        <div class="persona-desc">Expert em código. Soluções elegantes, boas práticas, debugging
+                            preciso.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Coach -->
+                <div class="persona-card" data-persona="coach">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-rocket"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Coach</div>
+                        <div class="persona-desc">Motivador e focado em resultados. Ajuda a definir metas e alcançar
+                            objetivos.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Professor -->
+                <div class="persona-card" data-persona="professor">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Professor</div>
+                        <div class="persona-desc">Didático e paciente. Explica conceitos complexos de forma simples e
+                            clara.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Criativo -->
+                <div class="persona-card" data-persona="criativo">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Criativo</div>
+                        <div class="persona-desc">Artístico e inovador. Brainstorming, ideias fora da caixa, roteiros e
+                            histórias.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Nutricionista -->
+                <div class="persona-card" data-persona="nutricionista">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-apple-whole"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Nutricionista</div>
+                        <div class="persona-desc">Receitas saudáveis, dietas personalizadas, cálculo de macros e
+                            cardápios.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Cozinheiro -->
+                <div class="persona-card" data-persona="cozinheiro">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Cozinheiro</div>
+                        <div class="persona-desc">Chef expert em todas as culinárias. Receitas simples ou elaboradas.
+                        </div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Personal Trainer -->
+                <div class="persona-card" data-persona="personal">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-dumbbell"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Personal Trainer</div>
+                        <div class="persona-desc">Analisa seu perfil, peso e biotipo. Monta treinos personalizados.
+                        </div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Consultor Financeiro -->
+                <div class="persona-card" data-persona="financeiro">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Consultor Financeiro</div>
+                        <div class="persona-desc">Investimentos, orçamento, economia. Planejamento financeiro completo.
+                        </div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Terapeuta -->
+                <div class="persona-card" data-persona="terapeuta">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Terapeuta</div>
+                        <div class="persona-desc">Apoio emocional, escuta ativa. Técnicas de bem-estar e
+                            autoconhecimento.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Escritor -->
+                <div class="persona-card" data-persona="escritor">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-feather"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Escritor</div>
+                        <div class="persona-desc">Contos, roteiros, poesia, copywriting. Criatividade sem limites.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Mecânico -->
+                <div class="persona-card" data-persona="mecanico">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Mecânico</div>
+                        <div class="persona-desc">Diagnóstico de problemas, manutenção, custos. Carros e motos.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+
+                <!-- Cliente Difícil -->
+                <div class="persona-card" data-persona="clienteDificil">
+                    <div class="persona-icon">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Cliente Difícil</div>
+                        <div class="persona-desc">Treine vendas com clientes difíceis. Simulação realista.</div>
+                    </div>
+                    <div class="persona-check"><i class="fa-solid fa-check"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal de memória -->
+    <div class="memory-modal-overlay" id="memoryModal" aria-hidden="true">
+        <div class="memory-modal" role="dialog" aria-modal="true" aria-labelledby="memoryModalTitle">
+            <div class="memory-modal-title" id="memoryModalTitle">Memória salva</div>
+            <div class="memory-modal-text" id="memoryModalText"></div>
+            <div class="memory-modal-actions">
+                <button type="button" class="btn memory-btn-close" id="memoryModalCloseBtn">Fechar</button>
+                <button type="button" class="btn memory-btn-edit" id="memoryModalEditBtn">Editar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Memória Premium -->
+    <div class="memory-editor-modal-overlay" id="memoryEditorModal" aria-hidden="true">
+        <div class="memory-editor-modal" role="dialog" aria-modal="true" aria-labelledby="memoryEditorTitle">
+            <div class="memory-editor-header">
+                <button type="button" class="memory-editor-back-btn" id="memoryEditorBackBtn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <h2 class="memory-editor-title" id="memoryEditorTitle">
+                    <i class="fa-solid fa-brain"></i>
+                    Memória
+                </h2>
+                <div class="memory-editor-spacer"></div>
+            </div>
+            <div class="memory-editor-content">
+                <textarea id="memoryEditorTextarea" class="memory-editor-textarea"
+                    placeholder="A memória da IA aparecerá aqui...&#10;&#10;A IA salva automaticamente informações sobre você usando tags.&#10;&#10;Setores:&#10;👤 IDENTIDADE - nome, idade, localização&#10;💼 PROFISSÃO/ESTUDOS - trabalho, estudos&#10;❤️ RELACIONAMENTOS - família, amigos, pets&#10;⭐ GOSTOS - hobbies, preferências&#10;🚫 NÃO GOSTA - coisas que evita&#10;💭 PERSONALIDADE - jeito de ser&#10;📌 LEMBRAR - lembretes gerais"></textarea>
+            </div>
+            <div class="memory-editor-footer">
+                <button type="button" class="memory-editor-clear-btn" id="memoryEditorClearBtn">
+                    <i class="fa-solid fa-trash"></i>
+                    Limpar tudo
+                </button>
+                <button type="button" class="memory-editor-save-btn" id="memoryEditorSaveBtn">
+                    <i class="fa-solid fa-check"></i>
+                    Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal de confirmação para limpar memória da IA -->
+    <div class="clear-memory-modal-overlay" id="clearMemoryModal" aria-hidden="true">
+        <div class="exit-modal" role="dialog" aria-modal="true" aria-labelledby="clearMemoryModalTitle">
+            <div class="exit-modal-title" id="clearMemoryModalTitle">
+                Você deseja limpar a memória da IA?
+            </div>
+            <div class="exit-modal-actions">
+                <button type="button" class="btn btn-stay" id="btnCancelClearMemory">Cancelar</button>
+                <button type="button" class="btn btn-exit" id="btnConfirmClearMemory">Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal de erro de conexão de rede -->
+    <div class="network-modal-overlay" id="networkModal" aria-hidden="true">
+        <div class="network-modal" role="dialog" aria-modal="true" aria-labelledby="networkModalTitle">
+            <div class="network-modal-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="network-modal-title" id="networkModalTitle">
+                Sem conexão com a internet
+            </div>
+            <div class="network-modal-subtitle" style="color: #888; font-size: 13px; margin: 8px 0 16px; text-align: center;">
+                Verifique sua conexão com a internet
+            </div>
+            <div class="network-modal-actions">
+                <button type="button" class="network-modal-btn network-modal-btn-retry" id="btnRetryNetwork">
+                    <i class="fa-solid fa-wifi"></i>
+                    Tentar novamente
+                </button>
+                <button type="button" class="network-modal-btn network-modal-btn-close" id="btnCloseNetwork">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de configuração de senha -->
+    <div class="password-setup-overlay" id="passwordSetupOverlay" aria-hidden="true">
+        <div class="password-setup-modal">
+            <div class="password-setup-header">
+                <button type="button" class="password-setup-close" id="passwordSetupClose">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 class="password-setup-title" id="passwordSetupTitle">Criar senha</h3>
+                <div class="password-setup-spacer"></div>
+            </div>
+            <p class="password-setup-subtitle" id="passwordSetupSubtitle">Digite uma senha de 4 dígitos</p>
+            <div class="password-input-dots" id="setupPasswordDots">
+                <span class="password-dot"></span>
+                <span class="password-dot"></span>
+                <span class="password-dot"></span>
+                <span class="password-dot"></span>
+            </div>
+            <div class="password-keypad">
+                <button type="button" class="keypad-btn" data-key="1">1</button>
+                <button type="button" class="keypad-btn" data-key="2">2</button>
+                <button type="button" class="keypad-btn" data-key="3">3</button>
+                <button type="button" class="keypad-btn" data-key="4">4</button>
+                <button type="button" class="keypad-btn" data-key="5">5</button>
+                <button type="button" class="keypad-btn" data-key="6">6</button>
+                <button type="button" class="keypad-btn" data-key="7">7</button>
+                <button type="button" class="keypad-btn" data-key="8">8</button>
+                <button type="button" class="keypad-btn" data-key="9">9</button>
+                <button type="button" class="keypad-btn keypad-empty"></button>
+                <button type="button" class="keypad-btn" data-key="0">0</button>
+                <button type="button" class="keypad-btn keypad-delete" data-key="delete">
+                    <i class="fa-solid fa-delete-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Alerta Premium -->
+    <div class="premium-alert-overlay" id="premiumAlertModal" aria-hidden="true">
+        <div class="premium-alert" role="dialog" aria-modal="true" aria-labelledby="premiumAlertTitle">
+            <div class="premium-alert-icon" id="premiumAlertIcon">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <div class="premium-alert-title" id="premiumAlertTitle">Alerta</div>
+            <div class="premium-alert-message" id="premiumAlertMessage"></div>
+            <button type="button" class="premium-alert-btn" id="premiumAlertBtn">OK</button>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal de seleção de fonte -->
+    <div class="font-modal-overlay" id="fontModal" aria-hidden="true">
+        <div class="font-modal" role="dialog" aria-modal="true" aria-labelledby="fontModalTitle">
+            <div class="font-modal-header">
+                <div class="font-modal-title" id="fontModalTitle">Escolha a fonte</div>
+                <button type="button" class="font-modal-close" id="fontModalCloseBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="font-modal-list" id="fontList">
+                <!-- MODERNAS / SANS-SERIF -->
+                <div class="font-category">Modernas</div>
+                <button type="button" class="font-option" data-font="Inter" style="font-family: 'Inter', sans-serif;">
+                    <span class="font-option-name">Inter</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Questrial"
+                    style="font-family: 'Questrial', sans-serif;">
+                    <span class="font-option-name">Questrial</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Roboto" style="font-family: 'Roboto', sans-serif;">
+                    <span class="font-option-name">Roboto</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Poppins"
+                    style="font-family: 'Poppins', sans-serif;">
+                    <span class="font-option-name">Poppins</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Montserrat"
+                    style="font-family: 'Montserrat', sans-serif;">
+                    <span class="font-option-name">Montserrat</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Nunito" style="font-family: 'Nunito', sans-serif;">
+                    <span class="font-option-name">Nunito</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Quicksand"
+                    style="font-family: 'Quicksand', sans-serif;">
+                    <span class="font-option-name">Quicksand</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+
+                <!-- CALIGRAFIA / CURSIVAS -->
+                <div class="font-category">Caligrafia</div>
+                <button type="button" class="font-option" data-font="Dancing Script"
+                    style="font-family: 'Dancing Script', cursive;">
+                    <span class="font-option-name">Dancing Script</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Pacifico"
+                    style="font-family: 'Pacifico', cursive;">
+                    <span class="font-option-name">Pacifico</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Great Vibes"
+                    style="font-family: 'Great Vibes', cursive;">
+                    <span class="font-option-name">Great Vibes</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Caveat" style="font-family: 'Caveat', cursive;">
+                    <span class="font-option-name">Caveat</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Satisfy" style="font-family: 'Satisfy', cursive;">
+                    <span class="font-option-name">Satisfy</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Lobster" style="font-family: 'Lobster', cursive;">
+                    <span class="font-option-name">Lobster</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+
+                <!-- ROBÓTICA / FUTURISTA -->
+                <div class="font-category">Futurista / Robótica</div>
+                <button type="button" class="font-option" data-font="Orbitron"
+                    style="font-family: 'Orbitron', sans-serif;">
+                    <span class="font-option-name">Orbitron</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Share Tech Mono"
+                    style="font-family: 'Share Tech Mono', monospace;">
+                    <span class="font-option-name">Share Tech Mono</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="VT323" style="font-family: 'VT323', monospace;">
+                    <span class="font-option-name">VT323 (Retrô)</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Press Start 2P"
+                    style="font-family: 'Press Start 2P', cursive;">
+                    <span class="font-option-name">Press Start 2P</span>
+                    <span class="font-option-preview">Aa Bb 123</span>
+                </button>
+
+                <!-- SERIF / ELEGANTE -->
+                <div class="font-category">Serif / Elegante</div>
+                <button type="button" class="font-option" data-font="Playfair Display"
+                    style="font-family: 'Playfair Display', serif;">
+                    <span class="font-option-name">Playfair Display</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Merriweather"
+                    style="font-family: 'Merriweather', serif;">
+                    <span class="font-option-name">Merriweather</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Lora" style="font-family: 'Lora', serif;">
+                    <span class="font-option-name">Lora</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Abril Fatface"
+                    style="font-family: 'Abril Fatface', cursive;">
+                    <span class="font-option-name">Abril Fatface</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+
+                <!-- EGÍPCIA / CLÁSSICA -->
+                <div class="font-category">Egípcia / Clássica</div>
+                <button type="button" class="font-option" data-font="Cinzel" style="font-family: 'Cinzel', serif;">
+                    <span class="font-option-name">Cinzel</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+
+                <!-- DIVERTIDA -->
+                <div class="font-category">Divertida</div>
+                <button type="button" class="font-option" data-font="Fredoka One"
+                    style="font-family: 'Fredoka One', cursive;">
+                    <span class="font-option-name">Fredoka One</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Bangers" style="font-family: 'Bangers', cursive;">
+                    <span class="font-option-name">Bangers</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Permanent Marker"
+                    style="font-family: 'Permanent Marker', cursive;">
+                    <span class="font-option-name">Permanent Marker</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Comic Neue"
+                    style="font-family: 'Comic Neue', cursive;">
+                    <span class="font-option-name">Comic Neue</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Shadows Into Light"
+                    style="font-family: 'Shadows Into Light', cursive;">
+                    <span class="font-option-name">Shadows Into Light</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+
+                <!-- GÓTICA / MEDIEVAL -->
+                <div class="font-category">Gótica / Medieval</div>
+                <button type="button" class="font-option" data-font="UnifrakturMaguntia"
+                    style="font-family: 'UnifrakturMaguntia', cursive;">
+                    <span class="font-option-name">UnifrakturMaguntia</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="MedievalSharp"
+                    style="font-family: 'MedievalSharp', cursive;">
+                    <span class="font-option-name">MedievalSharp</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+                <button type="button" class="font-option" data-font="Creepster"
+                    style="font-family: 'Creepster', cursive;">
+                    <span class="font-option-name">Creepster (Terror)</span>
+                    <span class="font-option-preview">Aa Bb Cc 123</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Debug Log -->
+    <div class="debug-modal" id="debugModal" aria-hidden="true">
+        <div class="debug-modal-header">
+            <span class="debug-modal-title">
+                <i class="fa-solid fa-terminal"></i> Console de Debug
+            </span>
+            <div class="debug-modal-actions">
+                <button type="button" class="debug-copy-btn" id="debugCopyBtn" title="Copiar logs">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+                <button type="button" class="debug-clear-btn" id="debugClearBtn" title="Limpar logs">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+                <button type="button" class="debug-close-btn" id="debugCloseBtn" title="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+        <div class="debug-modal-content" id="debugLogContent">
+            <div class="debug-log-entry debug-info">
+                <span class="debug-time">--:--:--</span>
+                <span class="debug-message">Console de debug iniciado...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Highlight.js e Marked.js -->
+
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Mermaid.js para mapas mentais e diagramas -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#a78bfa',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#8b5cf6',
+                lineColor: '#a78bfa',
+                secondaryColor: '#374151',
+                tertiaryColor: '#1f2937'
+            }
+        });
+    </script>
+
+    <!-- CODE STUDIO MODAL -->
+    <div class="code-studio-modal" id="codeStudioModal">
+        <div class="code-studio-app">
+            <!-- Header -->
+            <header class="code-studio-header">
+                <button class="code-studio-back-btn" id="codeStudioBackBtn"><i class="fas fa-chevron-left"></i></button>
+                <button class="code-studio-header-tab" data-tab="project">Projeto</button>
+                <input type="text" class="code-studio-project-name" id="codeStudioProjectName" placeholder="Nome do projeto..." value="Meu Projeto">
+                <button class="code-studio-download-btn" id="codeStudioDownloadBtn">Baixar App</button>
+            </header>
+            
+            <!-- Main Area -->
+            <div class="code-studio-main">
+                <!-- Editor e Preview lado a lado -->
+                <div class="code-studio-panels">
+                    <!-- Editor Panel -->
+                    <div class="code-studio-editor-panel" id="codeStudioEditorPanel">
+                        <div class="code-studio-lang-tabs">
+                            <button class="code-studio-lang-tab html active" data-lang="html">HTML</button>
+                            <button class="code-studio-lang-tab css" data-lang="css">CSS</button>
+                            <button class="code-studio-lang-tab js" data-lang="js">JS</button>
+                            <button class="code-studio-fullscreen-btn" id="csExpandCode" title="Tela cheia"><i class="fas fa-expand"></i></button>
+                        </div>
+                        <div class="code-studio-editor-wrapper">
+                            <div class="code-studio-line-numbers" id="codeStudioLineNumbers"></div>
+                            <div class="code-studio-editor-container">
+                                <pre class="code-studio-highlight" id="codeStudioHighlight" aria-hidden="true"></pre>
+                                <textarea class="code-studio-editor" id="codeStudioEditor" placeholder="código aqui..." spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Preview Panel -->
+                    <div class="code-studio-preview-panel" id="codeStudioPreviewPanel">
+                        <div class="code-studio-preview-header">
+                            <span class="code-studio-preview-title">Preview</span>
+                            <button class="code-studio-fullscreen-btn" id="csExpandPreview" title="Tela cheia"><i class="fas fa-expand"></i></button>
+                        </div>
+                        <div class="code-studio-preview-container" id="codeStudioPreviewContainer">
+                            <iframe id="codeStudioPreview"></iframe>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Área de Chat com IA -->
+                <div class="code-studio-chat-area">
+                    <div class="code-studio-chat-header">
+                        <span>Chat com IA</span>
+                        <button class="code-studio-clear-chat-btn" id="codeStudioClearChatBtn" title="Limpar chat"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="code-studio-chat-messages" id="codeStudioChatMessages">
+                        <div class="code-studio-chat-empty">Chat com IA para criar e editar código</div>
+                    </div>
+                    <!-- Barra de Diff com Cards - ACIMA do input -->
+                    <div class="cs-diff-bar" id="csDiffBar">
+                        <div class="cs-diff-cards" id="csDiffCards"></div>
+                        <div class="cs-diff-btns">
+                            <button class="cs-diff-btn cs-reject" id="csDiffReject"><i class="fas fa-xmark"></i></button>
+                            <button class="cs-diff-btn cs-accept" id="csDiffAccept"><i class="fas fa-check"></i></button>
+                        </div>
+                    </div>
+                    <div class="code-studio-chat-bar">
+                        <!-- Botão de modo -->
+                        <button class="cs-mode-btn" id="csModeBtn" onclick="toggleModeSelector()">
+                            <i class="fas fa-pen" id="csModeIcon"></i>
+                        </button>
+                        <div class="code-studio-chat-wrapper">
+                            <input type="text" class="code-studio-chat-input" id="codeStudioChatInput" placeholder="Peça para a IA criar ou modificar código...">
+                            <button class="code-studio-send-btn" id="codeStudioSendBtn"><i class="fa-solid fa-location-arrow"></i></button>
+                        </div>
+                    </div>
+                    <!-- Modal de seleção de modo -->
+                    <div class="cs-mode-selector" id="csModeSelector">
+                        <div class="cs-mode-option active" data-mode="edit" onclick="selectMode('edit')">
+                            <i class="fas fa-pen"></i>
+                            <div class="cs-mode-info">
+                                <span class="cs-mode-title">Edit</span>
+                                <span class="cs-mode-desc">Edita o código diretamente</span>
+                            </div>
+                        </div>
+                        <div class="cs-mode-option" data-mode="ask" onclick="selectMode('ask')">
+                            <i class="fas fa-comments"></i>
+                            <div class="cs-mode-info">
+                                <span class="cs-mode-title">Ask</span>
+                                <span class="cs-mode-desc">Pergunta sem modificar código</span>
+                            </div>
+                        </div>
+                        <div class="cs-mode-option" data-mode="agent" onclick="selectMode('agent')">
+                            <i class="fas fa-robot"></i>
+                            <div class="cs-mode-info">
+                                <span class="cs-mode-title">Agent</span>
+                                <span class="cs-mode-desc">Analisa, decide e itera até concluir</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Console (hidden) -->
+            <div class="code-studio-output" style="display:none;">
+                <div class="code-studio-output-content" id="codeStudioOutput"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fullscreen Code Viewer -->
+    <div class="code-studio-fullscreen" id="csFullscreenCodeModal">
+        <div class="cs-fullscreen-header">
+            <div class="cs-fullscreen-tabs">
+                <button class="cs-fs-tab active" data-lang="html">HTML</button>
+                <button class="cs-fs-tab" data-lang="css">CSS</button>
+                <button class="cs-fs-tab" data-lang="js">JS</button>
+            </div>
+            <button class="cs-fullscreen-close" id="csCloseFullscreenCode"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cs-fullscreen-code-wrapper">
+            <div class="cs-fullscreen-line-numbers" id="csFullscreenLineNumbers"></div>
+            <pre class="cs-fullscreen-code" id="csFullscreenCodeContent"></pre>
+        </div>
+    </div>
+    
+    <!-- Fullscreen Preview -->
+    <div class="code-studio-fullscreen" id="csFullscreenPreviewModal">
+        <div class="cs-fullscreen-header">
+            <span class="cs-fullscreen-title">Preview</span>
+            <button class="cs-fullscreen-close" id="csCloseFullscreenPreview"><i class="fas fa-times"></i></button>
+        </div>
+        <iframe class="cs-fullscreen-preview" id="csFullscreenPreviewIframe"></iframe>
+    </div>
+
+    <!-- CONVERTER MODAL removido - versão web -->
+
+    <!-- PDF.js para leitura de PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- jsPDF para geração de PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- JSZip para manipulação de arquivos DOCX/XLSX/PPTX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Módulos internos (ordem importa!) -->
+    <script src="js/debug-log.js"></script> <!-- Debug Log - Deve ser primeiro! -->
+    <script src="js/config.js"></script> <!-- Constantes e configurações -->
+    <script src="js/elements.js"></script> <!-- Referências DOM -->
+    <script src="js/vibration.js"></script> <!-- Vibração -->
+    <script src="js/utils.js"></script> <!-- Funções utilitárias -->
+    <script src="js/health-form.js"></script> <!-- Formulário de Saúde Premium -->
+    <script src="js/storage.js"></script> <!-- Armazenamento local -->
+    <script src="js/ui.js"></script> <!-- Interface do usuário -->
+    <script src="js/chat.js"></script> <!-- Gerenciamento de chat -->
+    <script src="js/personas.js"></script> <!-- Sistema de Personas -->
+    <script src="js/serp-search.js"></script> <!-- SerpAPI Busca Web -->
+    <script src="js/web-search.js"></script> <!-- Busca na web via Gemini -->
+    <script src="js/neo-api.js"></script> <!-- Sistema unificado de API (DEVE vir antes de api.js) -->
+    <script src="js/api.js"></script> <!-- Chamadas de API -->
+    <script src="js/pdf-handler.js"></script> <!-- Manipulação de PDF -->
+    <script src="js/diff-engine.js"></script> <!-- Motor de diff eficiente LCS -->
+    <script src="js/code-studio.js"></script> <!-- Code Studio IDE -->
+    <script src="js/converter-logic.js"></script> <!-- Conversor de Arquivos -->
+    
+    <!-- CODE STUDIO DIFF BAR - Script Inline usando DiffEngine v2 -->
+    <script>
+    (function() {
+        'use strict';
+        
+        // Estado do diff - agora com resultados de diff calculados
+        window.csDiffState = {
+            htmlBackup: '',
+            cssBackup: '',
+            jsBackup: '',
+            htmlNew: '',
+            cssNew: '',
+            jsNew: '',
+            // Resultados de diff calculados pelo DiffEngine
+            htmlDiff: null,
+            cssDiff: null,
+            jsDiff: null,
+            pending: false,
+            showingDiff: false,
+            currentDiffView: 'unified' // 'unified' ou 'split'
+        };
+        
+        // Mostrar barra de diff usando DiffEngine
+        window.showCodeDiffBar = function(htmlOld, cssOld, jsOld, htmlNew, cssNew, jsNew) {
+            console.log('[DIFF v2] showCodeDiffBar chamado!');
+            
+            // Salvar estados
+            var state = window.csDiffState;
+            state.htmlBackup = htmlOld || '';
+            state.cssBackup = cssOld || '';
+            state.jsBackup = jsOld || '';
+            state.htmlNew = htmlNew || '';
+            state.cssNew = cssNew || '';
+            state.jsNew = jsNew || '';
+            state.pending = true;
+            
+            // Calcular diff usando DiffEngine (algoritmo LCS eficiente)
+            if (window.DiffEngine) {
+                state.htmlDiff = window.DiffEngine.diff(htmlOld, htmlNew);
+                state.cssDiff = window.DiffEngine.diff(cssOld, cssNew);
+                state.jsDiff = window.DiffEngine.diff(jsOld, jsNew);
+                
+                console.log('[DIFF v2] HTML:', window.DiffEngine.getSummary(state.htmlDiff));
+                console.log('[DIFF v2] CSS:', window.DiffEngine.getSummary(state.cssDiff));
+                console.log('[DIFF v2] JS:', window.DiffEngine.getSummary(state.jsDiff));
+            } else {
+                console.error('[DIFF v2] DiffEngine não encontrado!');
+            }
+            
+            var diffBar = document.getElementById('csDiffBar');
+            var cardsContainer = document.getElementById('csDiffCards');
+            
+            if (!diffBar || !cardsContainer) {
+                console.error('[DIFF v2] Elementos não encontrados!');
+                return;
+            }
+            
+            // Criar cards baseados em estatísticas precisas do DiffEngine
+            var cards = '';
+            
+            // Card HTML
+            if (state.htmlDiff && window.DiffEngine.hasChanges(state.htmlDiff)) {
+                var htmlStats = state.htmlDiff.stats;
+                var htmlSummary = '';
+                if (htmlStats.added > 0) htmlSummary += '+' + htmlStats.added + ' ';
+                if (htmlStats.removed > 0) htmlSummary += '-' + htmlStats.removed + ' ';
+                if (htmlStats.modified > 0) htmlSummary += '~' + htmlStats.modified;
+                htmlSummary = htmlSummary.trim() || '●';
+                cards += '<div class="cs-diff-card html" onclick="window.showAdvancedDiff(\'html\')">';
+                cards += 'HTML <span style="font-size:10px;">' + htmlSummary + '</span></div>';
+            }
+            
+            // Card CSS
+            if (state.cssDiff && window.DiffEngine.hasChanges(state.cssDiff)) {
+                var cssStats = state.cssDiff.stats;
+                var cssSummary = '';
+                if (cssStats.added > 0) cssSummary += '+' + cssStats.added + ' ';
+                if (cssStats.removed > 0) cssSummary += '-' + cssStats.removed + ' ';
+                if (cssStats.modified > 0) cssSummary += '~' + cssStats.modified;
+                cssSummary = cssSummary.trim() || '●';
+                cards += '<div class="cs-diff-card css" onclick="window.showAdvancedDiff(\'css\')">';
+                cards += 'CSS <span style="font-size:10px;">' + cssSummary + '</span></div>';
+            }
+            
+            // Card JS
+            if (state.jsDiff && window.DiffEngine.hasChanges(state.jsDiff)) {
+                var jsStats = state.jsDiff.stats;
+                var jsSummary = '';
+                if (jsStats.added > 0) jsSummary += '+' + jsStats.added + ' ';
+                if (jsStats.removed > 0) jsSummary += '-' + jsStats.removed + ' ';
+                if (jsStats.modified > 0) jsSummary += '~' + jsStats.modified;
+                jsSummary = jsSummary.trim() || '●';
+                cards += '<div class="cs-diff-card js" onclick="window.showAdvancedDiff(\'js\')">';
+                cards += 'JS <span style="font-size:10px;">' + jsSummary + '</span></div>';
+            }
+            
+            if (cards) {
+                cardsContainer.innerHTML = cards;
+                diffBar.classList.add('visible');
+                diffBar.style.display = 'flex';
+                console.log('[DIFF v2] Barra exibida com cards baseados em diff LCS');
+            }
+        };
+        
+        // Mostrar modal de diff avançado
+        window.showAdvancedDiff = function(lang) {
+            console.log('[DIFF v2] Mostrando diff avançado para:', lang);
+            
+            var state = window.csDiffState;
+            var diffResult = null;
+            var langLabel = '';
+            
+            if (lang === 'html') {
+                diffResult = state.htmlDiff;
+                langLabel = 'HTML';
+            } else if (lang === 'css') {
+                diffResult = state.cssDiff;
+                langLabel = 'CSS';
+            } else if (lang === 'js') {
+                diffResult = state.jsDiff;
+                langLabel = 'JavaScript';
+            }
+            
+            if (!diffResult || !window.DiffEngine) {
+                console.error('[DIFF v2] Diff não encontrado para:', lang);
+                // Fallback para exibição simples
+                window.showDiffInCode(lang, false);
+                return;
+            }
+            
+            // Criar modal de diff
+            var modal = document.createElement('div');
+            modal.className = 'diff-modal-overlay';
+            modal.id = 'diffModalOverlay';
+            
+            var stats = diffResult.stats;
+            var statsHtml = '';
+            if (stats.added > 0) statsHtml += '<span class="diff-stat added">+' + stats.added + ' linhas</span>';
+            if (stats.removed > 0) statsHtml += '<span class="diff-stat removed">-' + stats.removed + ' linhas</span>';
+            if (stats.modified > 0) statsHtml += '<span class="diff-stat modified">~' + stats.modified + ' modificadas</span>';
+            
+            modal.innerHTML = '<div class="diff-modal">' +
+                '<div class="diff-modal-header">' +
+                    '<div class="diff-modal-title">' +
+                        '<span>📝 Alterações em ' + langLabel + '</span>' +
+                        '<div class="diff-modal-stats">' + statsHtml + '</div>' +
+                    '</div>' +
+                    '<div class="diff-modal-actions">' +
+                        '<button class="diff-modal-btn view-toggle" onclick="window.toggleDiffView(\'' + lang + '\')">Alternar Vista</button>' +
+                        '<button class="diff-modal-btn close-btn" onclick="window.closeDiffModal()">✕</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="diff-modal-body" id="diffModalBody">' +
+                    window.DiffEngine.toHTML(diffResult, state.currentDiffView) +
+                '</div>' +
+                '<div class="diff-modal-footer">' +
+                    '<button class="btn-reject" onclick="window.closeDiffModal(); window.rejectCodeChanges();">Rejeitar</button>' +
+                    '<button class="btn-accept" onclick="window.closeDiffModal(); window.acceptCodeChanges();">Aceitar Alterações</button>' +
+                '</div>' +
+            '</div>';
+            
+            document.body.appendChild(modal);
+            
+            // Trocar para a aba correspondente
+            var langTabs = document.querySelectorAll('.code-studio-lang-tab');
+            langTabs.forEach(function(tab) {
+                if (tab.classList.contains(lang)) {
+                    tab.click();
+                }
+            });
+        };
+        
+        // Alternar entre vista unified e split
+        window.toggleDiffView = function(lang) {
+            var state = window.csDiffState;
+            state.currentDiffView = state.currentDiffView === 'unified' ? 'split' : 'unified';
+            
+            var diffResult = null;
+            if (lang === 'html') diffResult = state.htmlDiff;
+            else if (lang === 'css') diffResult = state.cssDiff;
+            else if (lang === 'js') diffResult = state.jsDiff;
+            
+            var body = document.getElementById('diffModalBody');
+            if (body && diffResult && window.DiffEngine) {
+                body.innerHTML = window.DiffEngine.toHTML(diffResult, state.currentDiffView);
+            }
+        };
+        
+        // Fechar modal de diff
+        window.closeDiffModal = function() {
+            var modal = document.getElementById('diffModalOverlay');
+            if (modal) {
+                modal.remove();
+            }
+        };
+        
+        // Esconder barra de diff
+        window.hideCodeDiffBar = function() {
+            var diffBar = document.getElementById('csDiffBar');
+            if (diffBar) {
+                diffBar.classList.remove('visible');
+                diffBar.style.display = 'none';
+            }
+            window.csDiffState.pending = false;
+            window.csDiffState.showingDiff = false;
+            window.csDiffState.htmlDiff = null;
+            window.csDiffState.cssDiff = null;
+            window.csDiffState.jsDiff = null;
+            window.clearDiffHighlight();
+            window.closeDiffModal();
+        };
+        
+        // Mostrar diff no código ao clicar no card (modo simples)
+        window.showDiffInCode = function(lang, isRemoved) {
+            console.log('[DIFF v2] Mostrando diff inline para:', lang);
+            
+            // Trocar para a aba da linguagem
+            var langTabs = document.querySelectorAll('.code-studio-lang-tab');
+            langTabs.forEach(function(tab) {
+                if (tab.classList.contains(lang)) {
+                    tab.click();
+                }
+            });
+            
+            setTimeout(function() {
+                var state = window.csDiffState;
+                var diffResult = null;
+                
+                if (lang === 'html') diffResult = state.htmlDiff;
+                else if (lang === 'css') diffResult = state.cssDiff;
+                else if (lang === 'js') diffResult = state.jsDiff;
+                
+                if (diffResult && window.DiffEngine) {
+                    window.applyDiffHighlightV2(diffResult);
+                } else {
+                    // Fallback para método antigo
+                    var oldCode = '', newCode = '';
+                    if (lang === 'html') {
+                        oldCode = state.htmlBackup || '';
+                        newCode = state.htmlNew || '';
+                    } else if (lang === 'css') {
+                        oldCode = state.cssBackup || '';
+                        newCode = state.cssNew || '';
+                    } else if (lang === 'js') {
+                        oldCode = state.jsBackup || '';
+                        newCode = state.jsNew || '';
+                    }
+                    window.applyDiffHighlight(oldCode, newCode, isRemoved);
+                }
+                
+                window.csDiffState.showingDiff = true;
+            }, 100);
+        };
+        
+        // Aplicar highlight de diff usando operações precisas do LCS
+        window.applyDiffHighlightV2 = function(diffResult) {
+            var highlight = document.getElementById('codeStudioHighlight');
+            if (!highlight || !diffResult) return;
+            
+            var ops = diffResult.operations;
+            var resultLines = [];
+            
+            ops.forEach(function(op) {
+                var escapedLine = escapeHtml(op.line || op.newLine || '');
+                
+                switch(op.type) {
+                    case 'keep':
+                        resultLines.push(escapedLine);
+                        break;
+                    case 'add':
+                        resultLines.push('<span class="diff-line-added">' + escapedLine + '</span>');
+                        break;
+                    case 'remove':
+                        // Não incluir linhas removidas no código atual (já foram removidas)
+                        // Mas podemos mostrar como comentário
+                        break;
+                    case 'modify':
+                        // Mostrar nova versão destacada
+                        resultLines.push('<span class="diff-line-added">' + escapeHtml(op.newLine) + '</span>');
+                        break;
+                }
+            });
+            
+            highlight.innerHTML = resultLines.join('\n');
+            
+            // Scroll para primeira mudança
+            var firstDiff = highlight.querySelector('.diff-line-added, .diff-line-removed');
+            if (firstDiff) {
+                var editor = document.getElementById('codeStudioEditor');
+                var scrollPos = Math.max(0, firstDiff.offsetTop - 30);
+                if (editor) editor.scrollTop = scrollPos;
+                highlight.scrollTop = scrollPos;
+            }
+        };
+        
+        // Aplicar highlight de diff no código (legado - mantido para compatibilidade)
+        window.applyDiffHighlight = function(oldCode, newCode, isRemoved) {
+            // Se DiffEngine disponível, usar método novo
+            if (window.DiffEngine) {
+                var diffResult = window.DiffEngine.diff(oldCode, newCode);
+                window.applyDiffHighlightV2(diffResult);
+                return;
+            }
+            
+            // Fallback para método antigo
+            var highlight = document.getElementById('codeStudioHighlight');
+            if (!highlight) return;
+            
+            var oldLines = oldCode.split('\n');
+            var newLines = newCode.split('\n');
+            
+            var oldLinesSet = {};
+            oldLines.forEach(function(line) {
+                var trimmed = line.trim();
+                if (trimmed) oldLinesSet[trimmed] = true;
+            });
+            
+            var newLinesSet = {};
+            newLines.forEach(function(line) {
+                var trimmed = line.trim();
+                if (trimmed) newLinesSet[trimmed] = true;
+            });
+            
+            var currentHTML = highlight.innerHTML;
+            var lines = currentHTML.split('\n');
+            
+            if (isRemoved) {
+                var resultLines = [];
+                oldLines.forEach(function(line, idx) {
+                    var trimmed = line.trim();
+                    var highlightedLine = lines[idx] || escapeHtml(line);
+                    if (trimmed && !newLinesSet[trimmed]) {
+                        resultLines.push('<span class="diff-line-removed">' + highlightedLine + '</span>');
+                    } else {
+                        resultLines.push(highlightedLine);
+                    }
+                });
+                highlight.innerHTML = resultLines.join('\n');
+            } else {
+                var resultLines = [];
+                newLines.forEach(function(line, idx) {
+                    var trimmed = line.trim();
+                    var highlightedLine = lines[idx] || '';
+                    if (trimmed && !oldLinesSet[trimmed]) {
+                        resultLines.push('<span class="diff-line-added">' + highlightedLine + '</span>');
+                    } else {
+                        resultLines.push(highlightedLine);
+                    }
+                });
+                highlight.innerHTML = resultLines.join('\n');
+            }
+            
+            var firstDiff = highlight.querySelector('.diff-line-removed, .diff-line-added');
+            if (firstDiff) {
+                var editor = document.getElementById('codeStudioEditor');
+                var scrollPos = Math.max(0, firstDiff.offsetTop - 30);
+                if (editor) editor.scrollTop = scrollPos;
+                highlight.scrollTop = scrollPos;
+            }
+        };
+        
+        // Helper para escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+        
+        // Limpar highlight de diff
+        window.clearDiffHighlight = function() {
+            var highlight = document.getElementById('codeStudioHighlight');
+            if (!highlight) return;
+            
+            var html = highlight.innerHTML;
+            html = html.replace(/<span class="diff-line-added">([\s\S]*?)<\/span>/g, '$1');
+            html = html.replace(/<span class="diff-line-removed">([\s\S]*?)<\/span>/g, '$1');
+            highlight.innerHTML = html;
+            
+            window.csDiffState.showingDiff = false;
+        };
+        
+        // Aceitar alterações (manter novo código)
+        window.acceptCodeChanges = function() {
+            console.log('[DIFF v2] Alterações aceitas!');
+            window.hideCodeDiffBar();
+            if (window.showToast) {
+                window.showToast('Alterações confirmadas!', 'success');
+            }
+        };
+        
+        // Rejeitar alterações (voltar ao código anterior)
+        window.rejectCodeChanges = function() {
+            console.log('[DIFF v2] Revertendo alterações...');
+            
+            var state = window.csDiffState;
+            
+            var htmlEditor = document.getElementById('csHtmlCode');
+            var cssEditor = document.getElementById('csCssCode');
+            var jsEditor = document.getElementById('csJsCode');
+            
+            if (htmlEditor && state.htmlBackup !== undefined) {
+                htmlEditor.value = state.htmlBackup;
+            }
+            if (cssEditor && state.cssBackup !== undefined) {
+                cssEditor.value = state.cssBackup;
+            }
+            if (jsEditor && state.jsBackup !== undefined) {
+                jsEditor.value = state.jsBackup;
+            }
+            
+            if (typeof updatePreview === 'function') {
+                updatePreview();
+            } else if (typeof window.updatePreview === 'function') {
+                window.updatePreview();
+            }
+            
+            window.hideCodeDiffBar();
+            
+            if (window.showToast) {
+                window.showToast('Alterações revertidas!', 'warning');
+            }
+        };
+        
+        // Conectar botões quando DOM estiver pronto
+        function setupDiffButtons() {
+            var acceptBtn = document.getElementById('csDiffAccept');
+            var rejectBtn = document.getElementById('csDiffReject');
+            
+            if (acceptBtn) {
+                acceptBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[DIFF v2] Botão aceitar clicado');
+                    if (typeof window.acceptChanges === 'function') {
+                        window.acceptChanges();
+                    } else {
+                        window.acceptCodeChanges();
+                    }
+                };
+            }
+            
+            if (rejectBtn) {
+                rejectBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[DIFF v2] Botão rejeitar clicado');
+                    if (typeof window.rejectChanges === 'function') {
+                        window.rejectChanges();
+                    } else {
+                        window.rejectCodeChanges();
+                    }
+                };
+            }
+            
+            console.log('[DIFF v2] Botões configurados:', !!acceptBtn, !!rejectBtn);
+        }
+        
+        // Configurar quando documento estiver pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupDiffButtons);
+        } else {
+            setupDiffButtons();
+        }
+        
+        console.log('[DIFF v2] Sistema de diff com LCS carregado!');
+    })();
+    </script>
+    
+    <script src="js/mindmap.js"></script> <!-- Visualizador de Mapas Mentais -->
+    <script src="js/image-handler.js"></script> <!-- Manipulação de Imagens -->
+    <script src="js/image-storage.js"></script> <!-- Armazenamento de Imagens em IndexedDB -->
+    <script src="js/topic-images.js"></script> <!-- Imagens do tópico -->
+    <script src="js/charts.js"></script> <!-- Sistema de Gráficos -->
+    <script src="js/document-generator.js"></script> <!-- Geração de Documentos -->
+    <script src="js/particle-sphere.js"></script> <!-- Esfera de Partículas para Voice Call -->
+    <script src="js/voice-call.js"></script> <!-- Chamada de voz em tempo real -->
+    <script src="js/mic-voice.js"></script> <!-- Reconhecimento de voz -->
+    <script src="js/notes.js"></script> <!-- Sistema de anotações -->
+    <script src="js/suggestions.js"></script> <!-- Cards de sugestão -->
+    <script src="js/features.js"></script> <!-- Funcionalidades avançadas -->
+    <script src="js/ia-config.js"></script> <!-- Configuração de IA (versão web) -->
+    <script src="js/model-selector.js"></script> <!-- Seletor de Modelo Premium -->
+    <script src="js/main.js"></script> <!-- Inicialização e eventos -->
+    <script src="js/terms.js"></script> <!-- Termos de Uso - Por último -->
+
+</body>
+
+</html>
