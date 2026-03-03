@@ -13,7 +13,7 @@
 /* Top bar fixa (ícones) */
 .top-bar {
     position: fixed;
-    top: 36px;
+    top: 41px;
     left: 0;
     right: 0;
     width: 100%;
@@ -1013,4 +1013,5 @@ body.theme-light .premium-chat-icon path {
     --mode-color-1: #8b5cf6;
     --mode-color-2: #6366f1;
     --mode-color-3: #a855f7;
+
 }
