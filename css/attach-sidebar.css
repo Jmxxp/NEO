@@ -1,0 +1,322 @@
+/* ========================================
+   ATTACH SIDEBAR - Estilo ChatGPT
+   Cards horizontais + lista com subtítulos
+   ======================================== */
+
+/* Overlay */
+.attach-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    cursor: pointer;
+}
+
+.attach-sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Container principal */
+.attach-sidebar {
+    position: fixed;
+    bottom: -80px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 20px 16px 80px;
+    background: #212121;
+    border-radius: 16px 16px 0 0;
+    z-index: 1000;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+                visibility 0s linear 0.3s;
+    max-height: 75vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    visibility: hidden;
+    
+    /* Melhorar scroll touch */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+}
+
+.attach-sidebar.open {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+                visibility 0s linear 0s;
+}
+
+/* ===== CARDS HORIZONTAIS NO TOPO ===== */
+.attach-sidebar-cards {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.attach-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 12px;
+    background: #3c3c3c;
+    border: 1px solid #4a4a4a;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.attach-card:hover {
+    background: #454545;
+    border-color: #555555;
+}
+
+.attach-card:active {
+    transform: scale(0.97);
+    background: #4a4a4a;
+}
+
+.attach-card i {
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.attach-card span {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== DIVISOR ===== */
+.attach-sidebar-divider {
+    height: 1px;
+    background: #3c3c3c;
+    margin: 8px 0 12px;
+}
+
+/* ===== LISTA DE OPÇÕES ===== */
+.attach-sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.attach-list-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.attach-list-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.attach-list-item:active {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Ícone */
+.attach-list-item > i {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    flex-shrink: 0;
+}
+
+/* Container de texto */
+.attach-list-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.attach-list-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.attach-list-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== ESTADOS ATIVOS ===== */
+
+.attach-card.active {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+}
+
+.attach-card.active i {
+    color: #a78bfa;
+}
+
+.attach-list-item.active {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.attach-list-item.active > i {
+    color: #a78bfa;
+}
+
+/* ===== SCROLLBAR ===== */
+.attach-sidebar::-webkit-scrollbar {
+    width: 0;
+    display: none;
+}
+
+/* ===== TEMA CLARO ===== */
+
+body.theme-light .attach-sidebar-overlay {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+body.theme-light .attach-sidebar {
+    background: #f5f5f5;
+}
+
+body.theme-light .attach-card {
+    background: #e0e0e0;
+    border-color: #d0d0d0;
+}
+
+body.theme-light .attach-card:hover {
+    background: #d5d5d5;
+    border-color: #c5c5c5;
+}
+
+body.theme-light .attach-card i {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+body.theme-light .attach-card span {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+body.theme-light .attach-sidebar-divider {
+    background: #d0d0d0;
+}
+
+body.theme-light .attach-list-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+body.theme-light .attach-list-item > i {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body.theme-light .attach-list-title {
+    color: rgba(0, 0, 0, 0.9);
+}
+
+body.theme-light .attach-list-subtitle {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+body.theme-light .attach-card.active {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+body.theme-light .attach-list-item.active {
+    background: rgba(139, 92, 246, 0.08);
+}
+
+body.theme-light .attach-list-item.active > i {
+    color: #7c3aed;
+}
+
+/* ===== FEEDBACK VISUAL DE TOQUE ===== */
+.attach-list-item.touch-active,
+.attach-card.touch-active {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(0.98);
+}
+
+body.theme-light .attach-list-item.touch-active,
+body.theme-light .attach-card.touch-active {
+    background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ===== FORÇAR SCROLL E CLICKS FUNCIONANDO NOS BOTÕES ===== */
+.attach-list-item,
+.attach-card {
+    touch-action: manipulation !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* Garantir que o container permita scroll */
+.attach-sidebar {
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+}
+
+/* ===== GRADE 2x3 PARA CARDS ===== */
+.attach-sidebar-cards.attach-grid-2x3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 10px;
+}
+
+.attach-grid-2x3 .attach-card {
+    padding: 16px 8px;
+}
+
+.attach-grid-2x3 .attach-card i {
+    font-size: 20px;
+}
+
+.attach-grid-2x3 .attach-card span {
+    font-size: 12px;
+}
+
+/* ===== GRADE 1x2 PARA CARDS ===== */
+.attach-sidebar-cards.attach-grid-1x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.attach-grid-1x2 .attach-card {
+    padding: 16px 8px;
+}
+
+.attach-grid-1x2 .attach-card i {
+    font-size: 20px;
+}
+
+.attach-grid-1x2 .attach-card span {
+    font-size: 12px;
+}
